@@ -1,0 +1,7 @@
+project_id = "jzzlmhgpezaurernxmoz"
+
+[functions.analyze-emotion]
+verify_jwt = true
+
+[functions.get-recommendations]
+verify_jwt = true
