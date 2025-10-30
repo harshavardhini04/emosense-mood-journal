@@ -6,7 +6,8 @@ import EmotionBadge from "@/components/EmotionBadge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PenSquare, TrendingUp } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -60,10 +61,27 @@ const Dashboard = () => {
     return acc;
   }, {});
 
-  const chartData = entries.slice(0, 7).reverse().map((entry, index) => ({
-    name: `Day ${index + 1}`,
-    score: entry.emotion_score ? entry.emotion_score * 100 : 50,
+  const emotionColors = {
+    happy: "hsl(var(--emotion-happy))",
+    sad: "hsl(var(--emotion-sad))",
+    anxious: "hsl(var(--emotion-anxious))",
+    calm: "hsl(var(--emotion-calm))",
+    angry: "hsl(var(--emotion-angry))",
+    neutral: "hsl(var(--emotion-neutral))",
+  };
+
+  const chartData = entries.slice(0, 7).reverse().map((entry) => ({
+    emotion: entry.emotion.charAt(0).toUpperCase() + entry.emotion.slice(1),
+    score: entry.emotion_score ? Math.round(entry.emotion_score * 100) : 50,
+    fill: emotionColors[entry.emotion.toLowerCase() as keyof typeof emotionColors] || emotionColors.neutral,
+    date: new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
   }));
+
+  const chartConfig = {
+    score: {
+      label: "Emotion Intensity",
+    },
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -85,19 +103,21 @@ const Dashboard = () => {
 
         {/* Stats Overview */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Total Entries</CardTitle>
+          <Card className="border-2 shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Total Entries</CardTitle>
               <CardDescription>Your journaling streak</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-4xl font-bold text-primary">{entries.length}</p>
+              <p className="text-5xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                {entries.length}
+              </p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Most Common Emotion</CardTitle>
+          <Card className="border-2 shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Most Common Emotion</CardTitle>
               <CardDescription>This week</CardDescription>
             </CardHeader>
             <CardContent>
@@ -114,9 +134,9 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Emotional Wellness</CardTitle>
+          <Card className="border-2 shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Emotional Wellness</CardTitle>
               <CardDescription>Trending</CardDescription>
             </CardHeader>
             <CardContent>
@@ -130,42 +150,81 @@ const Dashboard = () => {
 
         {/* Mood Chart */}
         {chartData.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>Emotional Trends</CardTitle>
-              <CardDescription>Your mood patterns over time</CardDescription>
+          <Card className="mb-8 border-2 shadow-lg">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-2xl">Emotional Trends</CardTitle>
+              <CardDescription className="text-base">Your mood patterns over time</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
-                  <YAxis stroke="hsl(var(--muted-foreground))" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "0.5rem",
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="score"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    dot={{ fill: "hsl(var(--primary))", r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <ChartContainer config={chartConfig} className="h-[350px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <XAxis 
+                      dataKey="emotion" 
+                      stroke="hsl(var(--muted-foreground))"
+                      tick={{ fill: "hsl(var(--foreground))", fontSize: 12 }}
+                      tickLine={{ stroke: "hsl(var(--border))" }}
+                    />
+                    <YAxis 
+                      stroke="hsl(var(--muted-foreground))"
+                      tick={{ fill: "hsl(var(--foreground))", fontSize: 12 }}
+                      tickLine={{ stroke: "hsl(var(--border))" }}
+                      label={{ value: 'Emotion Intensity (%)', angle: -90, position: 'insideLeft', style: { fill: "hsl(var(--muted-foreground))", fontSize: 12 } }}
+                      domain={[0, 100]}
+                    />
+                    <ChartTooltip 
+                      content={
+                        <ChartTooltipContent 
+                          formatter={(value: any, name: any, props: any) => (
+                            <div className="flex flex-col gap-1">
+                              <span className="font-semibold text-foreground">
+                                {props.payload.emotion}
+                              </span>
+                              <span className="text-sm text-muted-foreground">
+                                {props.payload.date}
+                              </span>
+                              <span className="text-base font-bold" style={{ color: props.payload.fill }}>
+                                {value}%
+                              </span>
+                            </div>
+                          )}
+                        />
+                      }
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="score"
+                      strokeWidth={3}
+                      stroke="hsl(var(--primary))"
+                      dot={(props: any) => {
+                        const { cx, cy, payload } = props;
+                        return (
+                          <circle
+                            cx={cx}
+                            cy={cy}
+                            r={6}
+                            fill={payload.fill}
+                            stroke="hsl(var(--background))"
+                            strokeWidth={2}
+                            className="animate-pulse"
+                          />
+                        );
+                      }}
+                      activeDot={{ r: 8, strokeWidth: 2 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartContainer>
             </CardContent>
           </Card>
         )}
 
         {/* Recent Entries */}
-        <Card>
+        <Card className="border-2 shadow-lg">
           <CardHeader>
-            <CardTitle>Recent Entries</CardTitle>
-            <CardDescription>Your latest journal entries</CardDescription>
+            <CardTitle className="text-2xl">Recent Entries</CardTitle>
+            <CardDescription className="text-base">Your latest journal entries</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -184,18 +243,22 @@ const Dashboard = () => {
                 {entries.map((entry) => (
                   <div
                     key={entry.id}
-                    className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                    className="p-5 border-2 border-border rounded-xl hover:bg-muted/50 hover:shadow-md transition-all duration-200"
                   >
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-3">
                       <EmotionBadge
                         emotion={entry.emotion}
                         score={entry.emotion_score}
                       />
-                      <span className="text-sm text-muted-foreground">
-                        {new Date(entry.created_at).toLocaleDateString()}
+                      <span className="text-sm font-medium text-muted-foreground">
+                        {new Date(entry.created_at).toLocaleDateString('en-US', { 
+                          month: 'long', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
                       </span>
                     </div>
-                    <p className="text-sm line-clamp-2">{entry.content}</p>
+                    <p className="text-sm leading-relaxed line-clamp-2">{entry.content}</p>
                   </div>
                 ))}
               </div>
