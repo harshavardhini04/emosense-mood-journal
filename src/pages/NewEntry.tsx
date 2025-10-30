@@ -18,6 +18,8 @@ const NewEntry = () => {
   const [saving, setSaving] = useState(false);
   const [emotion, setEmotion] = useState<any>(null);
   const [recommendations, setRecommendations] = useState<any>(null);
+  const [entryLanguage, setEntryLanguage] = useState("english");
+  const [movieLanguage, setMovieLanguage] = useState("english");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -52,7 +54,7 @@ const NewEntry = () => {
       // Get recommendations
       const { data: recs, error: recError } = await supabase.functions.invoke(
         "get-recommendations",
-        { body: { emotion: data.emotion } }
+        { body: { emotion: data.emotion, language: movieLanguage } }
       );
 
       if (recError) throw recError;
@@ -83,6 +85,7 @@ const NewEntry = () => {
         content,
         emotion: emotion.emotion,
         emotion_score: emotion.score,
+        language: entryLanguage,
       });
 
       if (error) throw error;
@@ -121,6 +124,20 @@ const NewEntry = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="mb-4">
+              <label className="text-sm font-medium mb-2 block">Entry Language</label>
+              <select
+                value={entryLanguage}
+                onChange={(e) => setEntryLanguage(e.target.value)}
+                className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="english">English</option>
+                <option value="tamil">தமிழ் (Tamil)</option>
+                <option value="hindi">हिन्दी (Hindi)</option>
+                <option value="malayalam">മലയാളം (Malayalam)</option>
+                <option value="telugu">తెలుగు (Telugu)</option>
+              </select>
+            </div>
             <Textarea
               placeholder="Dear journal, today I..."
               value={content}
@@ -184,6 +201,30 @@ const NewEntry = () => {
                   <CardDescription>
                     Based on your current emotional state
                   </CardDescription>
+                  <div className="mt-4">
+                    <label className="text-sm font-medium mb-2 block">Movie Language</label>
+                    <select
+                      value={movieLanguage}
+                      onChange={(e) => {
+                        setMovieLanguage(e.target.value);
+                        // Re-fetch recommendations with new language
+                        if (emotion) {
+                          supabase.functions.invoke("get-recommendations", {
+                            body: { emotion: emotion.emotion, language: e.target.value }
+                          }).then(({ data }) => {
+                            if (data) setRecommendations(data);
+                          });
+                        }
+                      }}
+                      className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <option value="english">English</option>
+                      <option value="tamil">தமிழ் (Tamil)</option>
+                      <option value="hindi">हिन्दी (Hindi)</option>
+                      <option value="malayalam">മലയാളം (Malayalam)</option>
+                      <option value="telugu">తెలుగు (Telugu)</option>
+                    </select>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>

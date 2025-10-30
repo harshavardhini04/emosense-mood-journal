@@ -21,6 +21,7 @@ export type Database = {
           emotion: string
           emotion_score: number | null
           id: string
+          language: string
           user_id: string
         }
         Insert: {
@@ -29,6 +30,7 @@ export type Database = {
           emotion: string
           emotion_score?: number | null
           id?: string
+          language?: string
           user_id: string
         }
         Update: {
@@ -37,6 +39,7 @@ export type Database = {
           emotion?: string
           emotion_score?: number | null
           id?: string
+          language?: string
           user_id?: string
         }
         Relationships: []
