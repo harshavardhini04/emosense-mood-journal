@@ -20,6 +20,7 @@ const NewEntry = () => {
   const [recommendations, setRecommendations] = useState<any>(null);
   const [entryLanguage, setEntryLanguage] = useState("english");
   const [movieLanguage, setMovieLanguage] = useState("english");
+  const [selectedGenre, setSelectedGenre] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -51,14 +52,20 @@ const NewEntry = () => {
 
       setEmotion(data);
       
-      // Get recommendations
-      const { data: recs, error: recError } = await supabase.functions.invoke(
-        "get-recommendations",
-        { body: { emotion: data.emotion, language: movieLanguage } }
-      );
+      // For happy emotion, ask for genre first
+      if (data.emotion.toLowerCase() === 'happy') {
+        setRecommendations(null);
+        setSelectedGenre("");
+      } else {
+        // Get recommendations for other emotions
+        const { data: recs, error: recError } = await supabase.functions.invoke(
+          "get-recommendations",
+          { body: { emotion: data.emotion, language: movieLanguage } }
+        );
 
-      if (recError) throw recError;
-      setRecommendations(recs);
+        if (recError) throw recError;
+        setRecommendations(recs);
+      }
 
       toast({
         title: "Analysis complete!",
@@ -194,12 +201,71 @@ const NewEntry = () => {
               </CardContent>
             </Card>
 
+            {emotion?.emotion.toLowerCase() === 'happy' && !recommendations && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>Choose Your Movie Genre</CardTitle>
+                  <CardDescription>
+                    Since you're feeling great, what type of movie would you like to watch?
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-4">
+                    <label className="text-sm font-medium mb-2 block">Select Genre</label>
+                    <select
+                      value={selectedGenre}
+                      onChange={(e) => setSelectedGenre(e.target.value)}
+                      className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <option value="">Choose a genre...</option>
+                      <option value="action">Action</option>
+                      <option value="comedy">Comedy</option>
+                      <option value="romance">Romance</option>
+                      <option value="thriller">Thriller</option>
+                      <option value="drama">Drama</option>
+                    </select>
+                  </div>
+                  <Button
+                    onClick={async () => {
+                      if (!selectedGenre) {
+                        toast({
+                          title: "Select a genre",
+                          description: "Please choose a movie genre first",
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+                      const { data: recs, error: recError } = await supabase.functions.invoke(
+                        "get-recommendations",
+                        { body: { emotion: emotion.emotion, language: movieLanguage, genre: selectedGenre } }
+                      );
+                      if (recError) {
+                        toast({
+                          title: "Error",
+                          description: recError.message,
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+                      setRecommendations(recs);
+                    }}
+                    disabled={!selectedGenre}
+                    className="w-full"
+                  >
+                    Get Recommendations
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
             {recommendations && (
               <Card>
                 <CardHeader>
                   <CardTitle>Recommendations for You</CardTitle>
                   <CardDescription>
-                    Based on your current emotional state
+                    {emotion?.emotion.toLowerCase() === 'happy' 
+                      ? `${selectedGenre.charAt(0).toUpperCase() + selectedGenre.slice(1)} movies to enjoy`
+                      : "Based on your current emotional state"}
                   </CardDescription>
                   <div className="mt-4">
                     <label className="text-sm font-medium mb-2 block">Movie Language</label>
@@ -209,9 +275,11 @@ const NewEntry = () => {
                         setMovieLanguage(e.target.value);
                         // Re-fetch recommendations with new language
                         if (emotion) {
-                          supabase.functions.invoke("get-recommendations", {
-                            body: { emotion: emotion.emotion, language: e.target.value }
-                          }).then(({ data }) => {
+                          const body = emotion.emotion.toLowerCase() === 'happy' && selectedGenre
+                            ? { emotion: emotion.emotion, language: e.target.value, genre: selectedGenre }
+                            : { emotion: emotion.emotion, language: e.target.value };
+                          
+                          supabase.functions.invoke("get-recommendations", { body }).then(({ data }) => {
                             if (data) setRecommendations(data);
                           });
                         }
