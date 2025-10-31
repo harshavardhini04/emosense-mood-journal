@@ -47,9 +47,6 @@ const Index = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
 
         <div className="container relative mx-auto px-4 text-center">
-          <div className="inline-block mb-6 px-6 py-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full text-sm font-medium text-primary animate-fade-in">
-            ✨ AI-Powered Emotional Wellness
-          </div>
           <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-gradient-hero bg-clip-text text-transparent animate-fade-in leading-tight">
             Your Emotions, <br />
             Understood & Guided
