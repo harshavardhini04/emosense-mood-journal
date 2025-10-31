@@ -26,7 +26,7 @@ const Navbar = ({ user }: NavbarProps) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-card/60 backdrop-blur-md border-b border-border/50">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2">
           <Brain className="h-6 w-6 text-primary" />
