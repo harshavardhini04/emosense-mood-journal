@@ -84,7 +84,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-card/30">
+    <div className="min-h-screen bg-white">
       <Navbar user={user} />
 
       <div className="container mx-auto px-4 pt-24 pb-12">
@@ -103,7 +103,7 @@ const Dashboard = () => {
 
         {/* Stats Overview */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="border border-primary/20 bg-card/60 backdrop-blur-sm shadow-md hover:shadow-lg transition-shadow">
+          <Card className="bg-white border shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Total Entries</CardTitle>
               <CardDescription>Your journaling streak</CardDescription>
@@ -115,7 +115,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="border border-primary/20 bg-card/60 backdrop-blur-sm shadow-md hover:shadow-lg transition-shadow">
+          <Card className="bg-white border shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Most Common Emotion</CardTitle>
               <CardDescription>This week</CardDescription>
@@ -134,7 +134,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="border border-primary/20 bg-card/60 backdrop-blur-sm shadow-md hover:shadow-lg transition-shadow">
+          <Card className="bg-white border shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Emotional Wellness</CardTitle>
               <CardDescription>Trending</CardDescription>
@@ -150,7 +150,7 @@ const Dashboard = () => {
 
         {/* Mood Chart */}
         {chartData.length > 0 && (
-          <Card className="mb-8 border border-primary/20 bg-card/60 backdrop-blur-sm shadow-lg">
+          <Card className="mb-8 bg-white border shadow-lg">
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl">Emotional Trends</CardTitle>
               <CardDescription className="text-base">Your mood patterns over time</CardDescription>
@@ -221,7 +221,7 @@ const Dashboard = () => {
         )}
 
         {/* Recent Entries */}
-        <Card className="border border-primary/20 bg-card/60 backdrop-blur-sm shadow-lg">
+        <Card className="bg-white border shadow-lg">
           <CardHeader>
             <CardTitle className="text-2xl">Recent Entries</CardTitle>
             <CardDescription className="text-base">Your latest journal entries</CardDescription>
