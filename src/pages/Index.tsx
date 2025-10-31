@@ -35,19 +35,14 @@ const Index = () => {
       <Navbar user={user} />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-32 overflow-hidden">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-vibrant opacity-20 blur-3xl animate-pulse" />
-        <div className="absolute inset-0 bg-gradient-glow" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/30 to-background" />
-        
-        {/* Floating orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      <section className="relative pt-32 pb-32 overflow-hidden bg-primary/5">
+        {/* Background elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
 
         <div className="container relative mx-auto px-4 text-center">
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-gradient-hero bg-clip-text text-transparent animate-fade-in leading-tight">
+          <h1 className="text-6xl md:text-8xl font-bold mb-8 text-primary animate-fade-in leading-tight">
             Your Emotions, <br />
             Understood & Guided
           </h1>
@@ -57,7 +52,7 @@ const Index = () => {
           </p>
           <Button
             size="lg"
-            className="text-lg px-10 py-7 bg-gradient-hero hover:opacity-90 transition-all shadow-vibrant hover:shadow-emotion hover:scale-105 animate-fade-in"
+            className="text-lg px-10 py-7 bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-vibrant hover:shadow-emotion hover:scale-105 animate-fade-in"
             onClick={() => navigate("/auth")}
           >
             Start Your Journey
@@ -72,7 +67,7 @@ const Index = () => {
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
         
         <div className="container relative mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-hero bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-primary">
             How EmoSense Works
           </h2>
           <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
@@ -81,10 +76,10 @@ const Index = () => {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="group bg-card/50 backdrop-blur-sm p-8 rounded-3xl shadow-soft hover:shadow-vibrant transition-all duration-300 border border-primary/10 hover:border-primary/30 hover:-translate-y-2">
-              <div className="bg-gradient-to-br from-primary to-accent w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
+              <div className="bg-primary w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
                 <Sparkles className="h-7 w-7 text-primary-foreground" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">AI-Powered Analysis</h3>
+              <h3 className="text-2xl font-bold mb-4 text-primary">AI-Powered Analysis</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Our advanced AI detects emotions in your journal entries, helping you
                 understand your emotional patterns with precision and care
@@ -92,10 +87,10 @@ const Index = () => {
             </div>
 
             <div className="group bg-card/50 backdrop-blur-sm p-8 rounded-3xl shadow-soft hover:shadow-vibrant transition-all duration-300 border border-secondary/10 hover:border-secondary/30 hover:-translate-y-2">
-              <div className="bg-gradient-to-br from-secondary to-primary w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
+              <div className="bg-secondary w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
                 <Heart className="h-7 w-7 text-secondary-foreground" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Personalized Care</h3>
+              <h3 className="text-2xl font-bold mb-4 text-secondary">Personalized Care</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Get movie, music, and activity recommendations tailored to your current
                 emotional state for optimal wellbeing
@@ -103,10 +98,10 @@ const Index = () => {
             </div>
 
             <div className="group bg-card/50 backdrop-blur-sm p-8 rounded-3xl shadow-soft hover:shadow-vibrant transition-all duration-300 border border-accent/10 hover:border-accent/30 hover:-translate-y-2">
-              <div className="bg-gradient-to-br from-accent to-secondary w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
+              <div className="bg-accent w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
                 <TrendingUp className="h-7 w-7 text-accent-foreground" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">Track Progress</h3>
+              <h3 className="text-2xl font-bold mb-4 text-accent">Track Progress</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Visualize your emotional journey over time with beautiful mood
                 analytics, trends, and insightful metrics
@@ -117,9 +112,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="absolute inset-0 bg-gradient-vibrant opacity-30 blur-2xl" />
+      <section className="relative py-32 overflow-hidden bg-primary">
         <div className="absolute top-10 left-10 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-10 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
         
