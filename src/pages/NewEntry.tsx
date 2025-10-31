@@ -114,7 +114,7 @@ const NewEntry = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-card/30">
       <Navbar user={user} />
 
       <div className="container mx-auto px-4 pt-24 pb-12 max-w-4xl">
@@ -123,7 +123,7 @@ const NewEntry = () => {
           Express your thoughts and feelings freely
         </p>
 
-        <Card className="mb-6">
+        <Card className="mb-6 border border-primary/20 bg-card/60 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>How are you feeling today?</CardTitle>
             <CardDescription>
@@ -187,7 +187,7 @@ const NewEntry = () => {
 
         {emotion && (
           <>
-            <Card className="mb-6">
+            <Card className="mb-6 border border-primary/20 bg-card/60 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle>Detected Emotion</CardTitle>
                 <CardDescription>{emotion.summary}</CardDescription>
@@ -202,7 +202,7 @@ const NewEntry = () => {
             </Card>
 
             {emotion?.emotion.toLowerCase() === 'happy' && !recommendations && (
-              <Card className="mb-6">
+              <Card className="mb-6 border border-primary/20 bg-card/60 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle>Choose Your Movie Genre</CardTitle>
                   <CardDescription>
@@ -259,7 +259,7 @@ const NewEntry = () => {
             )}
 
             {recommendations && (
-              <Card>
+              <Card className="border border-primary/20 bg-card/60 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle>Recommendations for You</CardTitle>
                   <CardDescription>
