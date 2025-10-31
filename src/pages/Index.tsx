@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import Navbar from "@/components/Navbar";
 import { Sparkles, TrendingUp, Heart } from "lucide-react";
+import heroBg from "@/assets/hero-bg.jpg";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -29,95 +31,114 @@ const Index = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background orbs */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-black/80 rounded-full blur-[120px]" />
-        <div className="absolute top-20 right-20 w-[400px] h-[400px] bg-primary/40 rounded-full blur-[100px]" />
-        <div className="absolute bottom-20 left-20 w-[350px] h-[350px] bg-accent/30 rounded-full blur-[100px]" />
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navbar user={user} />
 
-      {/* Main container */}
-      <div className="relative min-h-screen flex items-center justify-center p-4 md:p-8">
-        <div className="w-full max-w-6xl bg-card/40 backdrop-blur-xl rounded-[3rem] p-8 md:p-12 shadow-2xl border border-white/10">
-          
-          {/* Navigation */}
-          <nav className="flex justify-center gap-4 mb-16">
-            <Button 
-              variant="ghost" 
-              className="text-foreground/80 hover:text-foreground hover:bg-white/10"
-              onClick={() => navigate("/")}
-            >
-              Home
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-foreground/80 hover:text-foreground hover:bg-white/10"
-              onClick={() => navigate("/dashboard")}
-            >
-              Dashboard
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-foreground/80 hover:text-foreground hover:bg-white/10"
-              onClick={() => navigate("/entry/new")}
-            >
-              Journal
-            </Button>
-            <Button 
-              className="bg-primary/80 hover:bg-primary text-primary-foreground backdrop-blur-sm"
-              onClick={() => navigate("/auth")}
-            >
-              Get Started
-            </Button>
-          </nav>
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-32 overflow-hidden">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-vibrant opacity-20 blur-3xl animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-glow" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/30 to-background" />
+        
+        {/* Floating orbs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
 
-          {/* Hero content */}
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-foreground mb-8 leading-tight">
-              A Quiet Space for Your{" "}
-              <span className="text-primary">Loudest Thoughts</span>
-            </h1>
-            
-            <p className="text-lg md:text-xl text-foreground/80 mb-12 max-w-2xl mx-auto leading-relaxed">
-              In the hustle and bustle of daily life, your loudest thoughts can easily get drowned out even by you.
-            </p>
+        <div className="container relative mx-auto px-4 text-center">
+          <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-gradient-hero bg-clip-text text-transparent animate-fade-in leading-tight">
+            Your Emotions, <br />
+            Understood & Guided
+          </h1>
+          <p className="text-xl md:text-2xl text-foreground/80 mb-12 max-w-3xl mx-auto animate-fade-in leading-relaxed">
+            EmoSense uses advanced AI to understand how you feel and provides personalized
+            recommendations to nurture your emotional wellbeing journey
+          </p>
+          <Button
+            size="lg"
+            className="text-lg px-10 py-7 bg-gradient-hero hover:opacity-90 transition-all shadow-vibrant hover:shadow-emotion hover:scale-105 animate-fade-in"
+            onClick={() => navigate("/auth")}
+          >
+            Start Your Journey
+          </Button>
+        </div>
+      </section>
 
-            {/* Feature cards */}
-            <div className="grid md:grid-cols-3 gap-6 mt-20">
-              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all">
-                <div className="bg-primary/20 w-12 h-12 rounded-xl flex items-center justify-center mb-4 mx-auto">
-                  <Sparkles className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">AI Analysis</h3>
-                <p className="text-sm text-foreground/70">
-                  Understand your emotional patterns with advanced AI
-                </p>
+      {/* Features Section */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background to-background/50" />
+        <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
+        
+        <div className="container relative mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-hero bg-clip-text text-transparent">
+            How EmoSense Works
+          </h2>
+          <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
+            Discover how our AI-powered platform helps you understand and improve your emotional wellbeing
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="group bg-card/50 backdrop-blur-sm p-8 rounded-3xl shadow-soft hover:shadow-vibrant transition-all duration-300 border border-primary/10 hover:border-primary/30 hover:-translate-y-2">
+              <div className="bg-gradient-to-br from-primary to-accent w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
+                <Sparkles className="h-7 w-7 text-primary-foreground" />
               </div>
+              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">AI-Powered Analysis</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Our advanced AI detects emotions in your journal entries, helping you
+                understand your emotional patterns with precision and care
+              </p>
+            </div>
 
-              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all">
-                <div className="bg-secondary/20 w-12 h-12 rounded-xl flex items-center justify-center mb-4 mx-auto">
-                  <Heart className="h-6 w-6 text-secondary" />
-                </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">Personal Care</h3>
-                <p className="text-sm text-foreground/70">
-                  Get recommendations tailored to your emotions
-                </p>
+            <div className="group bg-card/50 backdrop-blur-sm p-8 rounded-3xl shadow-soft hover:shadow-vibrant transition-all duration-300 border border-secondary/10 hover:border-secondary/30 hover:-translate-y-2">
+              <div className="bg-gradient-to-br from-secondary to-primary w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
+                <Heart className="h-7 w-7 text-secondary-foreground" />
               </div>
+              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">Personalized Care</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Get movie, music, and activity recommendations tailored to your current
+                emotional state for optimal wellbeing
+              </p>
+            </div>
 
-              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all">
-                <div className="bg-accent/20 w-12 h-12 rounded-xl flex items-center justify-center mb-4 mx-auto">
-                  <TrendingUp className="h-6 w-6 text-accent" />
-                </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">Track Progress</h3>
-                <p className="text-sm text-foreground/70">
-                  Visualize your emotional journey over time
-                </p>
+            <div className="group bg-card/50 backdrop-blur-sm p-8 rounded-3xl shadow-soft hover:shadow-vibrant transition-all duration-300 border border-accent/10 hover:border-accent/30 hover:-translate-y-2">
+              <div className="bg-gradient-to-br from-accent to-secondary w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
+                <TrendingUp className="h-7 w-7 text-accent-foreground" />
               </div>
+              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">Track Progress</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Visualize your emotional journey over time with beautiful mood
+                analytics, trends, and insightful metrics
+              </p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="relative py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-hero" />
+        <div className="absolute inset-0 bg-gradient-vibrant opacity-30 blur-2xl" />
+        <div className="absolute top-10 left-10 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+        
+        <div className="container relative mx-auto px-4 text-center">
+          <h2 className="text-5xl md:text-6xl font-bold text-primary-foreground mb-6 animate-fade-in">
+            Ready to understand yourself better?
+          </h2>
+          <p className="text-xl md:text-2xl text-primary-foreground/90 mb-12 max-w-3xl mx-auto animate-fade-in leading-relaxed">
+            Join thousands using EmoSense for emotional wellness and start your journey to better mental health today
+          </p>
+          <Button
+            size="lg"
+            className="text-lg px-12 py-7 bg-white text-primary hover:bg-white/90 shadow-vibrant hover:scale-105 transition-all font-semibold animate-fade-in"
+            onClick={() => navigate("/auth")}
+          >
+            Get Started Free
+          </Button>
+        </div>
+      </section>
     </div>
   );
 };
