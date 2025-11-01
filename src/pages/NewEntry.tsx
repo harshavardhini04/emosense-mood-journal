@@ -57,10 +57,15 @@ const NewEntry = () => {
         setRecommendations(null);
         setSelectedGenre("");
       } else {
-        // Get recommendations for other emotions using intent
+        // Get recommendations for other emotions using intent and recommended genres
         const { data: recs, error: recError } = await supabase.functions.invoke(
           "get-recommendations",
-          { body: { emotion: data.emotion, intent: data.intent, language: movieLanguage } }
+          { body: { 
+            emotion: data.emotion, 
+            intent: data.intent, 
+            language: movieLanguage,
+            recommended_genres: data.recommended_genres 
+          } }
         );
 
         if (recError) throw recError;
@@ -246,7 +251,13 @@ const NewEntry = () => {
                       }
                       const { data: recs, error: recError } = await supabase.functions.invoke(
                         "get-recommendations",
-                        { body: { emotion: emotion.emotion, intent: emotion.intent, language: movieLanguage, genre: selectedGenre } }
+                        { body: { 
+                          emotion: emotion.emotion, 
+                          intent: emotion.intent, 
+                          language: movieLanguage, 
+                          genre: selectedGenre,
+                          recommended_genres: emotion.recommended_genres 
+                        } }
                       );
                       if (recError) {
                         toast({
@@ -285,8 +296,19 @@ const NewEntry = () => {
                         // Re-fetch recommendations with new language
                         if (emotion) {
                           const body = emotion.emotion.toLowerCase() === 'happy' && selectedGenre
-                            ? { emotion: emotion.emotion, intent: emotion.intent, language: e.target.value, genre: selectedGenre }
-                            : { emotion: emotion.emotion, intent: emotion.intent, language: e.target.value };
+                            ? { 
+                                emotion: emotion.emotion, 
+                                intent: emotion.intent, 
+                                language: e.target.value, 
+                                genre: selectedGenre,
+                                recommended_genres: emotion.recommended_genres 
+                              }
+                            : { 
+                                emotion: emotion.emotion, 
+                                intent: emotion.intent, 
+                                language: e.target.value,
+                                recommended_genres: emotion.recommended_genres 
+                              };
                           
                           supabase.functions.invoke("get-recommendations", { body }).then(({ data }) => {
                             if (data) setRecommendations(data);

@@ -33,40 +33,96 @@ serve(async (req) => {
   }
 
   try {
-    const { emotion, intent, language = 'english', genre } = await req.json();
-    console.log("Getting recommendations for emotion:", emotion, "intent:", intent, "language:", language, "genre:", genre);
+    const { emotion, intent, language = 'english', genre, recommended_genres } = await req.json();
+    console.log("Getting recommendations for emotion:", emotion, "intent:", intent, "language:", language, "genre:", genre, "recommended_genres:", recommended_genres);
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Query movies from database based on intent
-    let moviesQuery = supabase
-      .from('movies')
-      .select('title, genre, year, rating, description')
-      .eq('language', language.toLowerCase())
-      .limit(8);
+    let movies: any[] = [];
 
-    // If intent is provided, prioritize intent-based recommendations
-    if (intent) {
-      moviesQuery = moviesQuery.eq('intent', intent.toLowerCase());
-    } else {
-      // Fallback to emotion-based recommendations
-      moviesQuery = moviesQuery.eq('base_emotion', emotion.toLowerCase());
+    // Strategy 1: Try exact intent match with language
+    if (intent && !genre) {
+      console.log("Strategy 1: Trying exact intent match:", intent);
+      const { data, error } = await supabase
+        .from('movies')
+        .select('title, genre, year, rating, description')
+        .eq('language', language.toLowerCase())
+        .eq('intent', intent.toLowerCase())
+        .limit(8);
+      
+      if (!error && data && data.length > 0) {
+        movies = data;
+        console.log("Found", data.length, "movies with exact intent match");
+      }
     }
 
-    // For genre filtering (when user is happy and selects a genre)
-    if (genre) {
-      moviesQuery = moviesQuery.eq('genre', genre.toLowerCase());
+    // Strategy 2: Try genre-based recommendations using AI-suggested genres
+    if (movies.length === 0 && recommended_genres && recommended_genres.length > 0) {
+      console.log("Strategy 2: Trying recommended genres:", recommended_genres);
+      const { data, error } = await supabase
+        .from('movies')
+        .select('title, genre, year, rating, description')
+        .eq('language', language.toLowerCase())
+        .in('genre', recommended_genres.map((g: string) => g.toLowerCase()))
+        .limit(8);
+      
+      if (!error && data && data.length > 0) {
+        movies = data;
+        console.log("Found", data.length, "movies with recommended genres");
+      }
     }
 
-    const { data: movies, error: moviesError } = await moviesQuery;
-
-    if (moviesError) {
-      console.error("Error fetching movies:", moviesError);
-      throw moviesError;
+    // Strategy 3: Try user-selected genre (for happy emotion)
+    if (movies.length === 0 && genre) {
+      console.log("Strategy 3: Trying user-selected genre:", genre);
+      const { data, error } = await supabase
+        .from('movies')
+        .select('title, genre, year, rating, description')
+        .eq('language', language.toLowerCase())
+        .eq('genre', genre.toLowerCase())
+        .limit(8);
+      
+      if (!error && data && data.length > 0) {
+        movies = data;
+        console.log("Found", data.length, "movies with user-selected genre");
+      }
     }
+
+    // Strategy 4: Fallback to base emotion
+    if (movies.length === 0 && emotion) {
+      console.log("Strategy 4: Falling back to base emotion:", emotion);
+      const { data, error } = await supabase
+        .from('movies')
+        .select('title, genre, year, rating, description')
+        .eq('language', language.toLowerCase())
+        .eq('base_emotion', emotion.toLowerCase())
+        .limit(8);
+      
+      if (!error && data && data.length > 0) {
+        movies = data;
+        console.log("Found", data.length, "movies with base emotion");
+      }
+    }
+
+    // Strategy 5: Last resort - just get any movies in that language
+    if (movies.length === 0) {
+      console.log("Strategy 5: Last resort - any movies in language:", language);
+      const { data, error } = await supabase
+        .from('movies')
+        .select('title, genre, year, rating, description')
+        .eq('language', language.toLowerCase())
+        .limit(8);
+      
+      if (!error && data && data.length > 0) {
+        movies = data;
+        console.log("Found", data.length, "movies as last resort");
+      }
+    }
+
+    console.log("Final movie count:", movies.length);
 
     // Fallback activities based on emotion
     const activities = recommendationMap[emotion.toLowerCase()]?.activities || 

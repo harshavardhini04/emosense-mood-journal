@@ -123,12 +123,22 @@ serve(async (req) => {
             - angry: frustration (high intensity), rage, injustice, betrayal
             - neutral: confused, numb, curious, processing (without strong valence)
             
+            MOVIE GENRE RECOMMENDATION LOGIC:
+            Based on psychological principles, suggest movie genres that can help:
+            - sad/grief/lonely → comedy, feel-good, uplifting, heartwarming (mood elevation)
+            - anxious/worried/stressed → calm, nature, light-comedy, slice-of-life (relaxation)
+            - angry/frustrated → action, thriller (cathartic release) OR calm, nature (de-escalation)
+            - burnout → calm, nature, feel-good, comedy (restoration)
+            - happy/grateful/excited → any genre they enjoy, romance, adventure, feel-good (enhancement)
+            - reflective/contemplative → drama, philosophical, documentary (introspection support)
+            
             Respond ONLY with a JSON object in this exact format:
             {
               "intent": "one of the detailed intents listed above (e.g., 'grateful_people', 'burnout_work')",
               "emotion": "one of: happy, sad, anxious, calm, angry, neutral",
               "score": a number between 0 and 1 indicating confidence,
-              "summary": "a brief empathetic response acknowledging their specific intent (max 50 words)"
+              "summary": "a brief empathetic response acknowledging their specific intent (max 50 words)",
+              "recommended_genres": ["array of 2-3 movie genres that would be psychologically beneficial based on their emotional state"]
             }
             
             Be precise, nuanced, and deeply empathetic. Capture the specific flavor of their experience, not just the general category.`
