@@ -31,36 +31,107 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an advanced empathetic emotion and intent detection system. Analyze journal entries to detect both the surface emotion and the deeper intent/context.
+            content: `You are an advanced empathetic emotion and intent detection system with deep psychological understanding. Analyze journal entries to detect nuanced emotional states and underlying psychological intents.
 
-            First, identify the DETAILED INTENT from these categories:
-            - grateful: expressing gratitude, appreciation, thankfulness
-            - achievement: celebrating success, accomplishment, pride
-            - excited: anticipation, enthusiasm, looking forward to something
-            - content: peaceful satisfaction, acceptance, serenity
-            - burnout: exhaustion, overwhelm, mental fatigue
-            - grief: loss, mourning, deep sadness
-            - lonely: isolation, disconnection, longing for connection
-            - worried: concern about future, uncertainty, fear
-            - frustrated: blocked goals, impatience, irritation
-            - stressed: pressure, tension, feeling overwhelmed
-            - disappointed: unmet expectations, letdown
-            - hopeful: optimism despite challenges, looking for silver lining
-            - confused: uncertainty, indecision, lack of clarity
-            - motivated: driven, energized, ready to take action
-            - reflective: contemplative, processing experiences
+            INTENT CATEGORIES (choose the most precise match):
+
+            POSITIVE EMOTIONAL STATES:
+            - grateful_general: General gratitude, appreciation for life, blessings
+            - grateful_people: Specific gratitude for relationships, loved ones, support
+            - grateful_achievement: Thankful for personal success or milestone
+            - achievement_major: Significant accomplishment, breakthrough, promotion
+            - achievement_minor: Small win, daily progress, personal best
+            - achievement_creative: Artistic success, creative breakthrough
+            - excited_anticipation: Looking forward to specific event, high energy
+            - excited_opportunity: New possibilities, open doors, potential
+            - excited_change: Positive life transition, new chapter
+            - content_peace: Deep serenity, acceptance, inner calm
+            - content_satisfaction: Fulfilled, complete, enough
+            - joyful_connection: Happiness from relationships, bonding
+            - joyful_experience: Delight from activity, moment, sensory pleasure
+            - proud_self: Self-recognition, personal growth pride
+            - proud_others: Pride in loved ones, their achievements
+            - relieved_crisis: Stress release after major worry resolved
+            - relieved_validation: Comfort from being understood, accepted
+            - inspired_motivated: Energized, driven, ready for action with clear direction
+            - inspired_creative: Creative spark, artistic inspiration, new ideas
+            - hopeful_recovery: Optimism after difficulty, seeing light
+            - hopeful_future: Positive outlook on what's coming, faith in possibility
+
+            CHALLENGING EMOTIONAL STATES:
+            - burnout_work: Professional exhaustion, career fatigue
+            - burnout_caregiving: Emotional depletion from caring for others
+            - burnout_general: Overall life exhaustion, multiple demands
+            - grief_loss: Mourning death, significant loss of person
+            - grief_ending: Sadness over relationship end, life chapter closing
+            - grief_change: Loss of identity, way of life, familiar patterns
+            - lonely_isolated: Physical isolation, no social contact
+            - lonely_disconnected: Surrounded but not understood, surface connections
+            - lonely_longing: Missing specific person, yearning for connection
+            - worried_specific: Concrete concern about known situation
+            - worried_generalized: Vague anxiety, free-floating worry
+            - worried_catastrophic: Worst-case scenario thinking, spiraling fears
+            - anxious_performance: Pressure about upcoming task, evaluation
+            - anxious_social: Fear of judgment, social situations, interaction
+            - anxious_health: Body-focused anxiety, health concerns
+            - frustrated_external: Blocked by circumstances, others, system
+            - frustrated_self: Self-disappointment, not meeting own standards
+            - frustrated_repetitive: Stuck in pattern, same problem recurring
+            - stressed_deadline: Time pressure, urgent demands
+            - stressed_conflict: Interpersonal tension, relationship strain
+            - stressed_overwhelm: Too much at once, capacity exceeded
+            - disappointed_expectation: Unmet hopes, letdown from anticipated outcome
+            - disappointed_betrayal: Trust broken, feeling let down by person
+            - sad_general: General melancholy, down mood, heaviness
+            - sad_nostalgic: Bittersweet longing for past, missing what was
+            - angry_injustice: Moral outrage, unfairness witnessed
+            - angry_boundary: Violation of personal space, disrespect
+            - angry_helpless: Rage from powerlessness, inability to change situation
+            - guilty_action: Remorse for specific behavior, harm caused
+            - guilty_existence: Generalized guilt, feeling like burden
+            - ashamed_exposure: Fear of being seen, vulnerability discomfort
+            - ashamed_inadequacy: Deep sense of not being enough
+
+            PROCESSING & NEUTRAL STATES:
+            - reflective_growth: Processing lessons, integrating experience
+            - reflective_questioning: Examining beliefs, values, life direction
+            - reflective_memory: Reviewing past, making meaning of history
+            - confused_decision: Uncertainty about choice, path forward
+            - confused_identity: Questioning self, who I am, what I want
+            - confused_mixed: Contradictory feelings, emotional complexity
+            - numb_protective: Emotional shutdown, too much to feel
+            - numb_depression: Flatness, absence of feeling, disconnection
+            - contemplative_philosophical: Deep thinking, existential wondering
+            - curious_exploratory: Open, wondering, discovering
+            - determined_challenge: Resolved to overcome, grit engaged
+            - determined_change: Committed to transformation, ready to act
             
-            Then map to a BASE EMOTION (happy, sad, anxious, calm, angry, neutral) for compatibility.
+            ANALYSIS APPROACH:
+            1. Read the entire entry for context and emotional arc
+            2. Identify primary emotion AND the specific situation/trigger
+            3. Consider intensity, duration markers, and coping patterns mentioned
+            4. Select the MOST SPECIFIC intent that captures the core psychological state
+            5. Map to base emotion that best represents the overall feeling tone
+            6. Provide confidence score based on clarity of emotional expression
+            7. Craft empathetic summary that validates the specific experience
+            
+            BASE EMOTION MAPPING:
+            - happy: joy, gratitude, excitement, achievement, pride, relief (mild-moderate)
+            - sad: grief, disappointment, loneliness, nostalgia, sadness
+            - anxious: worry, stress (high intensity), fear, panic, dread
+            - calm: content, peace, relief (deep), reflective, contemplative
+            - angry: frustration (high intensity), rage, injustice, betrayal
+            - neutral: confused, numb, curious, processing (without strong valence)
             
             Respond ONLY with a JSON object in this exact format:
             {
-              "intent": "one of the detailed intents listed above",
+              "intent": "one of the detailed intents listed above (e.g., 'grateful_people', 'burnout_work')",
               "emotion": "one of: happy, sad, anxious, calm, angry, neutral",
               "score": a number between 0 and 1 indicating confidence,
               "summary": "a brief empathetic response acknowledging their specific intent (max 50 words)"
             }
             
-            Be accurate, nuanced, and empathetic in your analysis.`
+            Be precise, nuanced, and deeply empathetic. Capture the specific flavor of their experience, not just the general category.`
           },
           {
             role: "user",
