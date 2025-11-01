@@ -184,13 +184,35 @@ serve(async (req) => {
   }
 
   try {
-    const { emotion, language = 'english', genre } = await req.json();
-    console.log("Getting recommendations for emotion:", emotion, "language:", language, "genre:", genre);
+    const { emotion, intent, language = 'english', genre } = await req.json();
+    console.log("Getting recommendations for emotion:", emotion, "intent:", intent, "language:", language, "genre:", genre);
 
     let recommendations;
 
+    // Map detailed intents to base emotions for recommendations
+    const intentToEmotionMap: Record<string, string> = {
+      'grateful': 'happy',
+      'achievement': 'happy',
+      'excited': 'happy',
+      'content': 'calm',
+      'burnout': 'anxious',
+      'grief': 'sad',
+      'lonely': 'sad',
+      'worried': 'anxious',
+      'frustrated': 'angry',
+      'stressed': 'anxious',
+      'disappointed': 'sad',
+      'hopeful': 'calm',
+      'confused': 'neutral',
+      'motivated': 'happy',
+      'reflective': 'calm'
+    };
+
+    // Use intent first, fallback to emotion
+    const effectiveEmotion = intent ? (intentToEmotionMap[intent.toLowerCase()] || emotion.toLowerCase()) : emotion.toLowerCase();
+
     // For happy emotion with genre selection
-    if (emotion.toLowerCase() === 'happy' && genre) {
+    if (effectiveEmotion === 'happy' && genre) {
       const genreMovieList = genreMovies[genre.toLowerCase()]?.[language.toLowerCase()] || genreMovies[genre.toLowerCase()]?.english || [];
       const happyActivities = recommendationMap.happy[language.toLowerCase()]?.activities || recommendationMap.happy.english.activities;
       recommendations = {
@@ -198,7 +220,7 @@ serve(async (req) => {
         activities: happyActivities
       };
     } else {
-      const emotionRecs = recommendationMap[emotion.toLowerCase()] || recommendationMap.neutral;
+      const emotionRecs = recommendationMap[effectiveEmotion] || recommendationMap.neutral;
       recommendations = emotionRecs[language.toLowerCase()] || emotionRecs.english;
     }
 

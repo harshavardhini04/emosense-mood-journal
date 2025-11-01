@@ -31,16 +31,36 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an empathetic emotion detection system. Analyze the emotional tone of journal entries and classify them into one of these emotions: happy, sad, anxious, calm, angry, or neutral. 
+            content: `You are an advanced empathetic emotion and intent detection system. Analyze journal entries to detect both the surface emotion and the deeper intent/context.
+
+            First, identify the DETAILED INTENT from these categories:
+            - grateful: expressing gratitude, appreciation, thankfulness
+            - achievement: celebrating success, accomplishment, pride
+            - excited: anticipation, enthusiasm, looking forward to something
+            - content: peaceful satisfaction, acceptance, serenity
+            - burnout: exhaustion, overwhelm, mental fatigue
+            - grief: loss, mourning, deep sadness
+            - lonely: isolation, disconnection, longing for connection
+            - worried: concern about future, uncertainty, fear
+            - frustrated: blocked goals, impatience, irritation
+            - stressed: pressure, tension, feeling overwhelmed
+            - disappointed: unmet expectations, letdown
+            - hopeful: optimism despite challenges, looking for silver lining
+            - confused: uncertainty, indecision, lack of clarity
+            - motivated: driven, energized, ready to take action
+            - reflective: contemplative, processing experiences
+            
+            Then map to a BASE EMOTION (happy, sad, anxious, calm, angry, neutral) for compatibility.
             
             Respond ONLY with a JSON object in this exact format:
             {
+              "intent": "one of the detailed intents listed above",
               "emotion": "one of: happy, sad, anxious, calm, angry, neutral",
               "score": a number between 0 and 1 indicating confidence,
-              "summary": "a brief empathetic response (max 50 words)"
+              "summary": "a brief empathetic response acknowledging their specific intent (max 50 words)"
             }
             
-            Be accurate and empathetic in your analysis.`
+            Be accurate, nuanced, and empathetic in your analysis.`
           },
           {
             role: "user",

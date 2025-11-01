@@ -57,10 +57,10 @@ const NewEntry = () => {
         setRecommendations(null);
         setSelectedGenre("");
       } else {
-        // Get recommendations for other emotions
+        // Get recommendations for other emotions using intent
         const { data: recs, error: recError } = await supabase.functions.invoke(
           "get-recommendations",
-          { body: { emotion: data.emotion, language: movieLanguage } }
+          { body: { emotion: data.emotion, intent: data.intent, language: movieLanguage } }
         );
 
         if (recError) throw recError;
@@ -189,15 +189,24 @@ const NewEntry = () => {
           <>
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle>Detected Emotion</CardTitle>
+                <CardTitle>Emotional Analysis</CardTitle>
                 <CardDescription>{emotion.summary}</CardDescription>
               </CardHeader>
-              <CardContent>
-                <EmotionBadge
-                  emotion={emotion.emotion}
-                  score={emotion.score}
-                  size="lg"
-                />
+              <CardContent className="space-y-3">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">Detected Intent</p>
+                  <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium capitalize">
+                    {emotion.intent}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">Base Emotion</p>
+                  <EmotionBadge
+                    emotion={emotion.emotion}
+                    score={emotion.score}
+                    size="lg"
+                  />
+                </div>
               </CardContent>
             </Card>
 
@@ -237,7 +246,7 @@ const NewEntry = () => {
                       }
                       const { data: recs, error: recError } = await supabase.functions.invoke(
                         "get-recommendations",
-                        { body: { emotion: emotion.emotion, language: movieLanguage, genre: selectedGenre } }
+                        { body: { emotion: emotion.emotion, intent: emotion.intent, language: movieLanguage, genre: selectedGenre } }
                       );
                       if (recError) {
                         toast({
@@ -276,8 +285,8 @@ const NewEntry = () => {
                         // Re-fetch recommendations with new language
                         if (emotion) {
                           const body = emotion.emotion.toLowerCase() === 'happy' && selectedGenre
-                            ? { emotion: emotion.emotion, language: e.target.value, genre: selectedGenre }
-                            : { emotion: emotion.emotion, language: e.target.value };
+                            ? { emotion: emotion.emotion, intent: emotion.intent, language: e.target.value, genre: selectedGenre }
+                            : { emotion: emotion.emotion, intent: emotion.intent, language: e.target.value };
                           
                           supabase.functions.invoke("get-recommendations", { body }).then(({ data }) => {
                             if (data) setRecommendations(data);
