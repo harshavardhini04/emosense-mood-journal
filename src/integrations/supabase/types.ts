@@ -44,6 +44,45 @@ export type Database = {
         }
         Relationships: []
       }
+      movies: {
+        Row: {
+          base_emotion: string
+          created_at: string
+          description: string | null
+          genre: string
+          id: string
+          intent: string
+          language: string
+          rating: number | null
+          title: string
+          year: number | null
+        }
+        Insert: {
+          base_emotion: string
+          created_at?: string
+          description?: string | null
+          genre: string
+          id?: string
+          intent: string
+          language?: string
+          rating?: number | null
+          title: string
+          year?: number | null
+        }
+        Update: {
+          base_emotion?: string
+          created_at?: string
+          description?: string | null
+          genre?: string
+          id?: string
+          intent?: string
+          language?: string
+          rating?: number | null
+          title?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
