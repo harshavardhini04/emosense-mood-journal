@@ -44,7 +44,8 @@ const NewEntry = () => {
 
     setAnalyzing(true);
     try {
-      const { data, error } = await supabase.functions.invoke("analyze-emotion", {
+      // Using custom ML model for emotion analysis
+      const { data, error } = await supabase.functions.invoke("analyze-emotion-custom", {
         body: { content },
       });
 
