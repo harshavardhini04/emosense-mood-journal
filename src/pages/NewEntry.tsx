@@ -8,13 +8,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles } from "lucide-react";
+import { useEmotionAnalysis } from "@/hooks/useEmotionAnalysis";
 
 const NewEntry = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { analyzeEmotion: analyzeEmotionModel, isAnalyzing: isModelAnalyzing, isModelLoading } = useEmotionAnalysis();
   const [user, setUser] = useState<any>(null);
   const [content, setContent] = useState("");
-  const [analyzing, setAnalyzing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [emotion, setEmotion] = useState<any>(null);
   const [recommendations, setRecommendations] = useState<any>(null);
@@ -42,14 +43,9 @@ const NewEntry = () => {
       return;
     }
 
-    setAnalyzing(true);
     try {
-      // Using custom ML model for emotion analysis
-      const { data, error } = await supabase.functions.invoke("analyze-emotion-custom", {
-        body: { content },
-      });
-
-      if (error) throw error;
+      // Using custom browser-based ML model for emotion analysis
+      const data = await analyzeEmotionModel(content);
 
       setEmotion(data);
       
@@ -80,11 +76,9 @@ const NewEntry = () => {
     } catch (error: any) {
       toast({
         title: "Error analyzing emotion",
-        description: error.message,
+        description: error.message || "Failed to analyze emotion",
         variant: "destructive",
       });
-    } finally {
-      setAnalyzing(false);
     }
   };
 
@@ -161,10 +155,15 @@ const NewEntry = () => {
             <div className="flex gap-4 mt-4">
               <Button
                 onClick={analyzeEmotion}
-                disabled={analyzing || !content.trim()}
+                disabled={isModelAnalyzing || isModelLoading || !content.trim()}
                 className="flex-1"
               >
-                {analyzing ? (
+                {isModelLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading Model...
+                  </>
+                ) : isModelAnalyzing ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Analyzing...
