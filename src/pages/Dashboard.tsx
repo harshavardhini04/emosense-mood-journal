@@ -105,8 +105,8 @@ const Dashboard = () => {
         <div className="grid md:grid-cols-3 gap-8 mb-10">
           <div className="glass-card hover-lift animate-slide-up">
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg text-white">Total Entries</CardTitle>
-              <CardDescription className="text-white">Your journaling streak</CardDescription>
+              <CardTitle className="text-lg">Total Entries</CardTitle>
+              <CardDescription>Your journaling streak</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-6xl font-bold bg-gradient-hero bg-clip-text text-transparent">
