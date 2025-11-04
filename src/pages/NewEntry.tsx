@@ -359,12 +359,12 @@ const NewEntry = () => {
                   <div>
                     <h3 className="font-semibold mb-3">Movies to Watch</h3>
                     <div className="flex flex-wrap gap-2">
-                      {recommendations.movies.map((movie: string, idx: number) => (
+                      {recommendations.movies.map((movie: any, idx: number) => (
                         <span
                           key={idx}
                           className="px-3 py-1.5 bg-muted rounded-lg text-sm"
                         >
-                          {movie}
+                          {typeof movie === 'string' ? movie : movie.title}
                         </span>
                       ))}
                     </div>
