@@ -78,16 +78,16 @@ const Auth = () => {
       <div className="w-full max-w-md z-10">
         <div className="glass-card p-10 animate-slide-up">
           <div className="flex items-center justify-center gap-3 mb-10">
-            <Brain className="h-10 w-10 text-white" />
-            <span className="text-3xl font-bold text-white">
+            <Brain className="h-10 w-10 text-primary" />
+            <span className="text-3xl font-bold text-black">
               EmoSense
             </span>
           </div>
 
-          <h2 className="text-3xl font-bold text-center mb-3 text-white">
+          <h2 className="text-3xl font-bold text-center mb-3 text-black">
             {isLogin ? "Welcome Back" : "Create Account"}
           </h2>
-          <p className="text-white/80 text-center mb-8 text-base">
+          <p className="text-black/80 text-center mb-8 text-base">
             {isLogin
               ? "Sign in to continue your journey"
               : "Start your emotional wellness journey"}
@@ -95,7 +95,7 @@ const Auth = () => {
 
           <form onSubmit={handleAuth} className="space-y-5">
             <div>
-              <Label htmlFor="email" className="text-white font-medium">Email</Label>
+              <Label htmlFor="email" className="text-black font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -103,12 +103,12 @@ const Auth = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 rounded-xl py-3 focus:ring-2 focus:ring-white/50"
+                className="mt-2 bg-white/90 border-black/20 text-black placeholder:text-black/50 rounded-xl py-3 focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-white font-medium">Password</Label>
+              <Label htmlFor="password" className="text-black font-medium">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -117,21 +117,21 @@ const Auth = () => {
                 placeholder="••••••••"
                 required
                 minLength={6}
-                className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 rounded-xl py-3 focus:ring-2 focus:ring-white/50"
+                className="mt-2 bg-white/90 border-black/20 text-black placeholder:text-black/50 rounded-xl py-3 focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
-            <Button type="submit" className="w-full bg-white text-primary hover:bg-white/95 rounded-xl py-6 text-base font-semibold hover:shadow-glow transition-smooth" disabled={loading}>
+            <Button type="submit" className="w-full bg-primary text-white hover:bg-primary/95 rounded-xl py-6 text-base font-semibold hover:shadow-glow transition-smooth" disabled={loading}>
               {loading ? "Loading..." : isLogin ? "Sign In" : "Sign Up"}
             </Button>
           </form>
 
-          <p className="text-center text-sm text-white/80 mt-8">
+          <p className="text-center text-sm text-black/80 mt-8">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-white hover:underline font-semibold"
+              className="text-primary hover:underline font-semibold"
             >
               {isLogin ? "Sign up" : "Sign in"}
             </button>

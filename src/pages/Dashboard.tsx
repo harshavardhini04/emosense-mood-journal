@@ -90,7 +90,7 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 pt-28 pb-12">
         <div className="flex items-center justify-between mb-10 animate-slide-up">
           <div>
-            <h1 className="text-5xl font-bold mb-2 bg-gradient-hero bg-clip-text text-transparent">Welcome Back!</h1>
+            <h1 className="text-5xl font-bold mb-2 text-white">Welcome Back!</h1>
             <p className="text-muted-foreground text-lg">
               How are you feeling today?
             </p>
@@ -105,11 +105,11 @@ const Dashboard = () => {
         <div className="grid md:grid-cols-3 gap-8 mb-10">
           <div className="glass-card hover-lift animate-slide-up">
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Total Entries</CardTitle>
-              <CardDescription>Your journaling streak</CardDescription>
+              <CardTitle className="text-lg text-white">Total Entries</CardTitle>
+              <CardDescription className="text-white">Your journaling streak</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-6xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+              <p className="text-6xl font-bold text-white">
                 {entries.length}
               </p>
             </CardContent>
@@ -154,7 +154,7 @@ const Dashboard = () => {
         {chartData.length > 0 && (
           <div className="glass-card mb-10 animate-slide-up" style={{ animationDelay: '0.3s' }}>
             <CardHeader className="pb-4">
-              <CardTitle className="text-3xl font-bold bg-gradient-hero bg-clip-text text-transparent">Emotional Trends</CardTitle>
+              <CardTitle className="text-3xl font-bold text-white">Emotional Trends</CardTitle>
               <CardDescription className="text-base">Your mood patterns over time</CardDescription>
             </CardHeader>
             <CardContent>
@@ -232,7 +232,7 @@ const Dashboard = () => {
         {/* Recent Entries */}
         <div className="glass-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <CardHeader>
-            <CardTitle className="text-3xl font-bold bg-gradient-hero bg-clip-text text-transparent">Recent Entries</CardTitle>
+            <CardTitle className="text-3xl font-bold text-white">Recent Entries</CardTitle>
             <CardDescription className="text-base">Your latest journal entries</CardDescription>
           </CardHeader>
           <CardContent>
