@@ -106,10 +106,21 @@ THERAPEUTIC RECOMMENDATION PRINCIPLE:
 - When detecting ANGRY → Recommend ACTION/CATHARTIC content
 - NEVER match sad mood with sad movies - therapeutic goal is mood elevation
 
-SYNTHETIC MOVIE REFERENCE DATASET (for inspiration, but also query actual database):
+SYNTHETIC MOVIE REFERENCE DATASET (for context and inspiration only):
 ${JSON.stringify(syntheticMovieDataset, null, 2)}
 
-Use this dataset as CONTEXT for the types of films to recommend, but your recommendations should come from the actual database query results. The synthetic dataset shows therapeutic patterns and examples.
+IMPORTANT: This synthetic dataset is for CONTEXT ONLY to understand therapeutic recommendation patterns. 
+YOU MUST GENERATE your own diverse, creative movie recommendations. Be varied and avoid repetition across different analyses.
+Draw inspiration from the dataset's therapeutic approach but recommend a WIDE variety of films from global cinema.
+
+MOVIE RECOMMENDATION REQUIREMENTS:
+- Generate 5-6 diverse movie recommendations
+- Include films from different eras (classic to modern)
+- Mix popular and lesser-known films
+- Consider international cinema (not just Hollywood)
+- Each recommendation MUST have therapeutic value for mood enhancement
+- Avoid repeating the same movies - be creative and varied
+- Match the language preference: ${language}
 
 You will receive:
 1. Journal entry text
@@ -128,8 +139,10 @@ Return ONLY valid JSON:
   "recommended_genres": ["Comedy", "Romance", "Feel-good"],
   "film_recommendations": [
     {
-      "title": "film_title_from_database",
-      "reason": "therapeutic reason for mood enhancement"
+      "title": "diverse_film_title",
+      "reason": "therapeutic reason for mood enhancement",
+      "year": "release_year",
+      "genre": "primary_genre"
     }
   ]
 }`;
@@ -190,46 +203,11 @@ Analyze the nuanced emotional state and recommend films.`;
       throw new Error('Invalid AI response format');
     }
 
-    // Therapeutic mapping: recommend uplifting content for negative emotions
-    const therapeuticGenreMap: Record<string, string[]> = {
-      sad: ['Comedy', 'Romance', 'Musical', 'Animation'],
-      anxious: ['Comedy', 'Animation', 'Family'],
-      angry: ['Action', 'Comedy', 'Sports'],
-      happy: ['Comedy', 'Romance', 'Action'],
-      calm: ['Drama', 'Documentary', 'Romance'],
-      neutral: ['Comedy', 'Drama']
+    // Use Gemini's film recommendations directly
+    enhancedAnalysis.recommendations = {
+      movies: enhancedAnalysis.film_recommendations || [],
+      activities: getActivitiesForEmotion(enhancedAnalysis.emotion)
     };
-
-    const therapeuticGenres = therapeuticGenreMap[enhancedAnalysis.emotion.toLowerCase()] || ['Comedy', 'Drama'];
-
-    // Query for mood-enhancing films based on therapeutic genres
-    const { data: therapeuticFilms } = await supabase
-      .from('movies')
-      .select('*')
-      .eq('language', language)
-      .in('genre', therapeuticGenres)
-      .limit(8);
-
-    if (therapeuticFilms && therapeuticFilms.length > 0) {
-      // Shuffle and pick 5
-      const shuffled = therapeuticFilms.sort(() => 0.5 - Math.random());
-      enhancedAnalysis.recommendations = {
-        movies: shuffled.slice(0, 5),
-        activities: getActivitiesForEmotion(enhancedAnalysis.emotion)
-      };
-    } else {
-      // Ultimate fallback - any movies in language
-      const { data: anyFilms } = await supabase
-        .from('movies')
-        .select('*')
-        .eq('language', language)
-        .limit(5);
-      
-      enhancedAnalysis.recommendations = {
-        movies: anyFilms || [],
-        activities: getActivitiesForEmotion(enhancedAnalysis.emotion)
-      };
-    }
 
     return new Response(JSON.stringify(enhancedAnalysis), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
