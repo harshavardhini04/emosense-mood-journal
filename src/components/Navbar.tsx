@@ -30,7 +30,7 @@ const Navbar = ({ user }: NavbarProps) => {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2 group">
           <Brain className="h-7 w-7 text-primary group-hover:scale-110 transition-bounce" />
-          <span className="text-xl font-bold text-white">
+          <span className="text-xl font-bold bg-gradient-hero bg-clip-text text-transparent">
             EmoSense
           </span>
         </Link>
