@@ -148,7 +148,17 @@ const NewEntry = () => {
       <Navbar user={user} />
 
       <div className="container mx-auto px-4 pt-28 pb-12 max-w-4xl">
-        <h1 className="text-5xl font-bold mb-3 bg-gradient-hero bg-clip-text text-transparent animate-slide-up">New Journal Entry</h1>
+        <h1 
+          className="text-5xl font-bold mb-3 animate-slide-up"
+          style={{
+            background: 'linear-gradient(135deg, hsl(262 52% 47%) 0%, hsl(210 60% 60%) 50%, hsl(340 75% 65%) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}
+        >
+          New Journal Entry
+        </h1>
         <p className="text-muted-foreground mb-10 text-lg animate-slide-up" style={{ animationDelay: '0.1s' }}>
           Express your thoughts and feelings freely
         </p>
