@@ -24,6 +24,73 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // Synthetic movie dataset for context (not exhaustive - also query database)
+    const syntheticMovieDataset = {
+      sad: {
+        therapeutic_genres: ['Comedy', 'Romance', 'Musical', 'Animation', 'Feel-good'],
+        sample_movies: [
+          { title: 'The Pursuit of Happyness', reason: 'Inspiring journey from struggle to triumph' },
+          { title: 'Amélie', reason: 'Whimsical and uplifting French romance' },
+          { title: 'The Intouchables', reason: 'Heartwarming friendship that lifts spirits' },
+          { title: 'Little Miss Sunshine', reason: 'Quirky comedy about family resilience' },
+          { title: 'Up', reason: 'Emotional yet ultimately uplifting adventure' },
+          { title: 'Sing Street', reason: 'Music-driven story of hope and creativity' },
+          { title: 'Paddington', reason: 'Gentle, feel-good family adventure' }
+        ]
+      },
+      anxious: {
+        therapeutic_genres: ['Comedy', 'Animation', 'Family', 'Feel-good'],
+        sample_movies: [
+          { title: 'Finding Nemo', reason: 'Calming underwater adventure with positive resolution' },
+          { title: 'The Grand Budapest Hotel', reason: 'Visually soothing, whimsical storytelling' },
+          { title: 'Ferris Bueller\'s Day Off', reason: 'Carefree comedy about living in the moment' },
+          { title: 'Chef', reason: 'Low-stakes, food-centered feel-good story' },
+          { title: 'Paddington 2', reason: 'Gentle, reassuring family adventure' },
+          { title: 'Wallace & Gromit', reason: 'Calming stop-motion comedy' }
+        ]
+      },
+      angry: {
+        therapeutic_genres: ['Action', 'Comedy', 'Sports', 'Thriller'],
+        sample_movies: [
+          { title: 'The Karate Kid', reason: 'Cathartic martial arts journey with resolution' },
+          { title: 'Mad Max: Fury Road', reason: 'High-energy action for emotional release' },
+          { title: 'Rocky', reason: 'Empowering underdog sports story' },
+          { title: 'John Wick', reason: 'Stylized action with satisfying justice' },
+          { title: 'Whiplash', reason: 'Intense but ultimately empowering' },
+          { title: 'Creed', reason: 'Modern boxing story about overcoming adversity' }
+        ]
+      },
+      happy: {
+        therapeutic_genres: ['Comedy', 'Romance', 'Adventure', 'Musical'],
+        sample_movies: [
+          { title: 'La La Land', reason: 'Colorful musical celebration of dreams' },
+          { title: 'The Princess Bride', reason: 'Classic feel-good adventure romance' },
+          { title: 'Crazy Rich Asians', reason: 'Joyful romantic comedy with stunning visuals' },
+          { title: 'Mamma Mia!', reason: 'Exuberant musical with ABBA hits' },
+          { title: 'Spider-Man: Into the Spider-Verse', reason: 'Energetic, visually stunning superhero story' }
+        ]
+      },
+      calm: {
+        therapeutic_genres: ['Drama', 'Documentary', 'Romance', 'Nature'],
+        sample_movies: [
+          { title: 'My Neighbor Totoro', reason: 'Peaceful Studio Ghibli countryside tale' },
+          { title: 'Before Sunrise', reason: 'Contemplative romantic dialogue' },
+          { title: 'The Secret Life of Walter Mitty', reason: 'Serene adventure about self-discovery' },
+          { title: 'Planet Earth', reason: 'Soothing nature documentary' },
+          { title: 'Lost in Translation', reason: 'Quiet, introspective connection story' }
+        ]
+      },
+      neutral: {
+        therapeutic_genres: ['Comedy', 'Drama', 'Adventure'],
+        sample_movies: [
+          { title: 'The Breakfast Club', reason: 'Relatable coming-of-age exploration' },
+          { title: 'Good Will Hunting', reason: 'Thoughtful drama about personal growth' },
+          { title: 'The Martian', reason: 'Problem-solving adventure with humor' },
+          { title: 'Midnight in Paris', reason: 'Charming time-travel romance-comedy' }
+        ]
+      }
+    };
+
     // Enhanced system prompt for nuanced emotion analysis
     const systemPrompt = `You are an expert emotion analyst and film therapist specializing in mood enhancement therapy.
 
@@ -38,6 +105,11 @@ THERAPEUTIC RECOMMENDATION PRINCIPLE:
 - When detecting ANXIOUS/STRESSED → Recommend CALMING/COMEDY content
 - When detecting ANGRY → Recommend ACTION/CATHARTIC content
 - NEVER match sad mood with sad movies - therapeutic goal is mood elevation
+
+SYNTHETIC MOVIE REFERENCE DATASET (for inspiration, but also query actual database):
+${JSON.stringify(syntheticMovieDataset, null, 2)}
+
+Use this dataset as CONTEXT for the types of films to recommend, but your recommendations should come from the actual database query results. The synthetic dataset shows therapeutic patterns and examples.
 
 You will receive:
 1. Journal entry text
