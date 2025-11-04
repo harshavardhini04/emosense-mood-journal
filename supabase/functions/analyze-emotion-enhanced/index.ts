@@ -25,32 +25,39 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Enhanced system prompt for nuanced emotion analysis
-    const systemPrompt = `You are an expert emotion analyst and film therapist. You will receive:
-1. A journal entry from a user
-2. Initial emotion classification from DistilBERT model (emotion: ${distilbert_emotion}, confidence: ${distilbert_confidence})
+    const systemPrompt = `You are an expert emotion analyst and film therapist specializing in mood enhancement therapy.
 
-Your task is to provide a NUANCED emotional analysis that considers:
-- Compound emotions (e.g., "tiring day" suggests exhaustion + sadness, "busy day" suggests stress + neutral)
-- Emotional intensity and context
-- Underlying therapeutic needs
+CRITICAL EMOTION DETECTION RULES:
+1. EXHAUSTION/HECTIC/TIRING/BUSY days = SAD (even if user expresses pride afterward)
+2. STRESS/OVERWHELM/CHAOS = SAD or ANXIOUS
+3. Look beyond positive endings - focus on the DOMINANT emotional experience
+4. "Managed to get through" indicates struggle = underlying sadness/exhaustion
 
-Then recommend 5 films from our database that ACCURATELY match the user's emotional state and therapeutic intent.
+THERAPEUTIC RECOMMENDATION PRINCIPLE:
+- When detecting SAD/TIRED/EXHAUSTED → Recommend UPLIFTING/HAPPY movies to ENHANCE mood
+- When detecting ANXIOUS/STRESSED → Recommend CALMING/COMEDY content
+- When detecting ANGRY → Recommend ACTION/CATHARTIC content
+- NEVER match sad mood with sad movies - therapeutic goal is mood elevation
 
-CRITICAL: Base recommendations on ACTUAL intent and nuanced emotion, not just surface keywords.
+You will receive:
+1. Journal entry text
+2. DistilBERT classification: ${distilbert_emotion} (confidence: ${distilbert_confidence})
 
-Return ONLY valid JSON in this exact format:
+IGNORE DistilBERT if it misses exhaustion/stress signals. Trust your analysis.
+
+Return ONLY valid JSON:
 {
   "emotion": "happy|sad|angry|anxious|calm|neutral",
   "nuanced_emotions": ["primary_emotion", "secondary_emotion"],
   "confidence": 0.0-1.0,
-  "intent": "specific_therapeutic_intent",
-  "summary": "empathetic 2-3 sentence summary",
+  "intent": "therapeutic_intent_focused_on_mood_enhancement",
+  "summary": "empathetic 2-3 sentence summary acknowledging their struggle",
   "emotional_intensity": "low|medium|high",
-  "recommended_genres": ["genre1", "genre2", "genre3"],
+  "recommended_genres": ["Comedy", "Romance", "Feel-good"],
   "film_recommendations": [
     {
-      "title": "film_title",
-      "reason": "why this film matches their emotional state and intent"
+      "title": "film_title_from_database",
+      "reason": "therapeutic reason for mood enhancement"
     }
   ]
 }`;
@@ -111,35 +118,43 @@ Analyze the nuanced emotional state and recommend films.`;
       throw new Error('Invalid AI response format');
     }
 
-    // Query database for actual films matching the AI recommendations
-    const filmTitles = enhancedAnalysis.film_recommendations?.map((f: any) => f.title) || [];
-    const { data: dbFilms, error: dbError } = await supabase
+    // Therapeutic mapping: recommend uplifting content for negative emotions
+    const therapeuticGenreMap: Record<string, string[]> = {
+      sad: ['Comedy', 'Romance', 'Musical', 'Animation'],
+      anxious: ['Comedy', 'Animation', 'Family'],
+      angry: ['Action', 'Comedy', 'Sports'],
+      happy: ['Comedy', 'Romance', 'Action'],
+      calm: ['Drama', 'Documentary', 'Romance'],
+      neutral: ['Comedy', 'Drama']
+    };
+
+    const therapeuticGenres = therapeuticGenreMap[enhancedAnalysis.emotion.toLowerCase()] || ['Comedy', 'Drama'];
+
+    // Query for mood-enhancing films based on therapeutic genres
+    const { data: therapeuticFilms } = await supabase
       .from('movies')
       .select('*')
-      .in('title', filmTitles)
       .eq('language', language)
-      .limit(5);
+      .in('genre', therapeuticGenres)
+      .limit(8);
 
-    // If we have fewer films from DB, query by intent/genre as fallback
-    if (!dbFilms || dbFilms.length < 5) {
-      const { data: fallbackFilms } = await supabase
+    if (therapeuticFilms && therapeuticFilms.length > 0) {
+      // Shuffle and pick 5
+      const shuffled = therapeuticFilms.sort(() => 0.5 - Math.random());
+      enhancedAnalysis.recommendations = {
+        movies: shuffled.slice(0, 5),
+        activities: getActivitiesForEmotion(enhancedAnalysis.emotion)
+      };
+    } else {
+      // Ultimate fallback - any movies in language
+      const { data: anyFilms } = await supabase
         .from('movies')
         .select('*')
         .eq('language', language)
-        .or(`intent.eq.${enhancedAnalysis.intent},genre.in.(${enhancedAnalysis.recommended_genres.join(',')})`)
         .limit(5);
       
-      if (fallbackFilms) {
-        const combined = [...(dbFilms || []), ...fallbackFilms];
-        const unique = Array.from(new Map(combined.map(m => [m.title, m])).values()).slice(0, 5);
-        enhancedAnalysis.recommendations = {
-          movies: unique,
-          activities: getActivitiesForEmotion(enhancedAnalysis.emotion)
-        };
-      }
-    } else {
       enhancedAnalysis.recommendations = {
-        movies: dbFilms,
+        movies: anyFilms || [],
         activities: getActivitiesForEmotion(enhancedAnalysis.emotion)
       };
     }
