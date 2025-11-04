@@ -70,28 +70,32 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-card rounded-2xl shadow-emotion p-8">
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <Brain className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4 relative overflow-hidden">
+      {/* Floating background elements */}
+      <div className="absolute top-20 left-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
+      
+      <div className="w-full max-w-md z-10">
+        <div className="glass-card p-10 animate-slide-up">
+          <div className="flex items-center justify-center gap-3 mb-10">
+            <Brain className="h-10 w-10 text-white" />
+            <span className="text-3xl font-bold text-white">
               EmoSense
             </span>
           </div>
 
-          <h2 className="text-2xl font-bold text-center mb-2">
+          <h2 className="text-3xl font-bold text-center mb-3 text-white">
             {isLogin ? "Welcome Back" : "Create Account"}
           </h2>
-          <p className="text-muted-foreground text-center mb-6">
+          <p className="text-white/80 text-center mb-8 text-base">
             {isLogin
               ? "Sign in to continue your journey"
               : "Start your emotional wellness journey"}
           </p>
 
-          <form onSubmit={handleAuth} className="space-y-4">
+          <form onSubmit={handleAuth} className="space-y-5">
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-white font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -99,11 +103,12 @@ const Auth = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
+                className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 rounded-xl py-3 focus:ring-2 focus:ring-white/50"
               />
             </div>
 
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-white font-medium">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -112,20 +117,21 @@ const Auth = () => {
                 placeholder="••••••••"
                 required
                 minLength={6}
+                className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 rounded-xl py-3 focus:ring-2 focus:ring-white/50"
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-white text-primary hover:bg-white/95 rounded-xl py-6 text-base font-semibold hover:shadow-glow transition-smooth" disabled={loading}>
               {loading ? "Loading..." : isLogin ? "Sign In" : "Sign Up"}
             </Button>
           </form>
 
-          <p className="text-center text-sm text-muted-foreground mt-6">
+          <p className="text-center text-sm text-white/80 mt-8">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-primary hover:underline font-medium"
+              className="text-white hover:underline font-semibold"
             >
               {isLogin ? "Sign up" : "Sign in"}
             </button>

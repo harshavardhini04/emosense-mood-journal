@@ -35,25 +35,31 @@ const Index = () => {
       <Navbar user={user} />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-32 overflow-hidden">
+      <section className="relative pt-40 pb-32 overflow-hidden">
         {/* Background image with overlay */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/75 to-background/90 backdrop-blur-sm" />
+        
+        {/* Floating elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-secondary/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
 
         <div className="container relative mx-auto px-4 text-center">
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 text-primary animate-fade-in leading-tight">
+          <h1 className="text-6xl md:text-8xl font-bold mb-8 text-primary animate-slide-up leading-tight">
             Your Emotions, <br />
             Understood & Guided
           </h1>
-          <p className="text-xl md:text-2xl text-foreground/80 mb-12 max-w-3xl mx-auto animate-fade-in leading-relaxed">
+          <p className="text-xl md:text-2xl text-foreground/80 mb-12 max-w-3xl mx-auto animate-slide-up leading-relaxed" style={{ animationDelay: '0.2s' }}>
             Transform your emotions into insights with intelligent wellness guidance
           </p>
           <Button
             size="lg"
-            className="text-lg px-10 py-7 bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-vibrant hover:shadow-emotion hover:scale-105 animate-fade-in"
+            className="text-lg px-12 py-8 bg-gradient-hero hover:shadow-glow text-white transition-smooth hover:scale-105 animate-slide-up rounded-2xl font-semibold"
+            style={{ animationDelay: '0.4s' }}
             onClick={() => navigate("/auth")}
           >
             Start Your Journey
@@ -62,23 +68,23 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background to-background/50" />
-        <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
+      <section className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-subtle" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-glow" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
         
         <div className="container relative mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-primary">
+          <h2 className="text-5xl md:text-6xl font-bold text-center mb-6 bg-gradient-hero bg-clip-text text-transparent">
             How EmoSense Works
           </h2>
-          <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
+          <p className="text-center text-muted-foreground mb-20 max-w-2xl mx-auto text-lg">
             Discover how our intelligent platform helps you understand and improve your emotional wellbeing
           </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="group bg-card/50 backdrop-blur-sm p-8 rounded-3xl shadow-soft hover:shadow-vibrant transition-all duration-300 border border-primary/10 hover:border-primary/30 hover:-translate-y-2">
-              <div className="bg-primary w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
-                <Sparkles className="h-7 w-7 text-primary-foreground" />
+          <div className="grid md:grid-cols-3 gap-10">
+            <div className="group glass-card p-10 hover:shadow-vibrant transition-smooth hover:-translate-y-2 animate-slide-up">
+              <div className="bg-gradient-hero w-16 h-16 rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-bounce shadow-emotion">
+                <Sparkles className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-primary">Smart Analysis</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -87,9 +93,9 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="group bg-card/50 backdrop-blur-sm p-8 rounded-3xl shadow-soft hover:shadow-vibrant transition-all duration-300 border border-secondary/10 hover:border-secondary/30 hover:-translate-y-2">
-              <div className="bg-secondary w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
-                <Heart className="h-7 w-7 text-secondary-foreground" />
+            <div className="group glass-card p-10 hover:shadow-vibrant transition-smooth hover:-translate-y-2 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <div className="bg-gradient-calm w-16 h-16 rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-bounce shadow-emotion">
+                <Heart className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-secondary">Personalized Care</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -98,9 +104,9 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="group bg-card/50 backdrop-blur-sm p-8 rounded-3xl shadow-soft hover:shadow-vibrant transition-all duration-300 border border-accent/10 hover:border-accent/30 hover:-translate-y-2">
-              <div className="bg-accent w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
-                <TrendingUp className="h-7 w-7 text-accent-foreground" />
+            <div className="group glass-card p-10 hover:shadow-vibrant transition-smooth hover:-translate-y-2 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+              <div className="bg-gradient-energetic w-16 h-16 rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-bounce shadow-emotion">
+                <TrendingUp className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-accent">Track Progress</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -113,20 +119,21 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-32 overflow-hidden bg-primary">
-        <div className="absolute top-10 left-10 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+      <section className="relative py-40 overflow-hidden bg-gradient-hero">
+        <div className="absolute top-10 left-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }} />
         
         <div className="container relative mx-auto px-4 text-center">
-          <h2 className="text-5xl md:text-6xl font-bold text-primary-foreground mb-6 animate-fade-in">
+          <h2 className="text-5xl md:text-7xl font-bold text-white mb-8 animate-slide-up">
             Ready to understand yourself better?
           </h2>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 mb-12 max-w-3xl mx-auto animate-fade-in leading-relaxed">
+          <p className="text-xl md:text-2xl text-white/90 mb-14 max-w-3xl mx-auto animate-slide-up leading-relaxed" style={{ animationDelay: '0.2s' }}>
             Join thousands using EmoSense for emotional wellness and start your journey to better mental health today
           </p>
           <Button
             size="lg"
-            className="text-lg px-12 py-7 bg-white text-primary hover:bg-white/90 shadow-vibrant hover:scale-105 transition-all font-semibold animate-fade-in"
+            className="text-lg px-14 py-8 bg-white text-primary hover:bg-white/95 shadow-vibrant hover:scale-105 transition-smooth font-semibold rounded-2xl animate-slide-up"
+            style={{ animationDelay: '0.4s' }}
             onClick={() => navigate("/auth")}
           >
             Get Started Free

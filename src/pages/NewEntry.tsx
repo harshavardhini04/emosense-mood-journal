@@ -144,29 +144,29 @@ const NewEntry = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-subtle">
       <Navbar user={user} />
 
-      <div className="container mx-auto px-4 pt-24 pb-12 max-w-4xl">
-        <h1 className="text-4xl font-bold mb-2">New Journal Entry</h1>
-        <p className="text-muted-foreground mb-8">
+      <div className="container mx-auto px-4 pt-28 pb-12 max-w-4xl">
+        <h1 className="text-5xl font-bold mb-3 bg-gradient-hero bg-clip-text text-transparent animate-slide-up">New Journal Entry</h1>
+        <p className="text-muted-foreground mb-10 text-lg animate-slide-up" style={{ animationDelay: '0.1s' }}>
           Express your thoughts and feelings freely
         </p>
 
-        <Card className="mb-6">
+        <div className="glass-card mb-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <CardHeader>
-            <CardTitle>How are you feeling today?</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl">How are you feeling today?</CardTitle>
+            <CardDescription className="text-base">
               Write about your day, thoughts, or anything on your mind
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="mb-4">
+            <div className="mb-5">
               <label className="text-sm font-medium mb-2 block">Entry Language</label>
               <select
                 value={entryLanguage}
                 onChange={(e) => setEntryLanguage(e.target.value)}
-                className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-4 py-3 border-2 border-input bg-background/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-smooth"
               >
                 <option value="english">English</option>
                 <option value="tamil">தமிழ் (Tamil)</option>
@@ -179,28 +179,28 @@ const NewEntry = () => {
               placeholder="Dear journal, today I..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="min-h-[300px] text-base"
+              className="min-h-[300px] text-base rounded-xl border-2 focus:ring-2 focus:ring-primary transition-smooth"
             />
 
-            <div className="flex gap-4 mt-4">
+            <div className="flex gap-4 mt-6">
               <Button
                 onClick={analyzeEmotion}
                 disabled={isModelAnalyzing || isModelLoading || !content.trim()}
-                className="flex-1"
+                className="flex-1 bg-gradient-hero hover:shadow-glow text-white rounded-xl py-6 text-base font-semibold"
               >
                 {isModelLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Loading Model...
                   </>
                 ) : isModelAnalyzing ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Analyzing...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="mr-2 h-4 w-4" />
+                    <Sparkles className="mr-2 h-5 w-5" />
                     Analyze Emotion
                   </>
                 )}
@@ -211,31 +211,31 @@ const NewEntry = () => {
                   onClick={saveEntry}
                   disabled={saving}
                   variant="secondary"
-                  className="flex-1"
+                  className="flex-1 bg-gradient-calm hover:shadow-glow text-white rounded-xl py-6 text-base font-semibold"
                 >
                   {saving ? "Saving..." : "Save Entry"}
                 </Button>
               )}
             </div>
           </CardContent>
-        </Card>
+        </div>
 
         {emotion && (
           <>
-            <Card className="mb-6">
+            <div className="glass-card mb-8 animate-slide-up">
               <CardHeader>
-                <CardTitle>Emotional Analysis</CardTitle>
-                <CardDescription>{emotion.summary}</CardDescription>
+                <CardTitle className="text-2xl">Emotional Analysis</CardTitle>
+                <CardDescription className="text-base">{emotion.summary}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-4">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Detected Intent</p>
-                  <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium capitalize">
+                  <p className="text-sm text-muted-foreground mb-2 font-medium">Detected Intent</p>
+                  <span className="px-5 py-2.5 bg-gradient-hero/10 text-primary rounded-2xl text-sm font-semibold capitalize border-2 border-primary/20">
                     {emotion.intent}
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Base Emotion</p>
+                  <p className="text-sm text-muted-foreground mb-3 font-medium">Base Emotion</p>
                   <EmotionBadge
                     emotion={emotion.emotion}
                     score={emotion.score}
@@ -243,7 +243,7 @@ const NewEntry = () => {
                   />
                 </div>
               </CardContent>
-            </Card>
+            </div>
 
             {emotion?.emotion.toLowerCase() === 'happy' && !recommendations && (
               <Card className="mb-6">

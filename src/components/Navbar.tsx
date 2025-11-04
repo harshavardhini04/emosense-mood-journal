@@ -26,10 +26,10 @@ const Navbar = ({ user }: NavbarProps) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2">
-          <Brain className="h-6 w-6 text-primary" />
+        <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2 group">
+          <Brain className="h-7 w-7 text-primary group-hover:scale-110 transition-bounce" />
           <span className="text-xl font-bold bg-gradient-hero bg-clip-text text-transparent">
             EmoSense
           </span>
@@ -39,18 +39,18 @@ const Navbar = ({ user }: NavbarProps) => {
           {user ? (
             <>
               <Link to="/dashboard">
-                <Button variant="ghost">Dashboard</Button>
+                <Button variant="ghost" className="hover-lift rounded-xl">Dashboard</Button>
               </Link>
               <Link to="/entry/new">
-                <Button variant="default">New Entry</Button>
+                <Button variant="default" className="bg-gradient-hero hover:shadow-glow text-white rounded-xl">New Entry</Button>
               </Link>
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
+              <Button variant="ghost" size="icon" onClick={handleLogout} className="hover-lift rounded-xl">
                 <LogOut className="h-5 w-5" />
               </Button>
             </>
           ) : (
             <Link to="/auth">
-              <Button variant="default">Get Started</Button>
+              <Button variant="default" className="bg-gradient-hero hover:shadow-glow text-white rounded-xl">Get Started</Button>
             </Link>
           )}
         </div>

@@ -84,38 +84,38 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-subtle">
       <Navbar user={user} />
 
-      <div className="container mx-auto px-4 pt-24 pb-12">
-        <div className="flex items-center justify-between mb-8">
+      <div className="container mx-auto px-4 pt-28 pb-12">
+        <div className="flex items-center justify-between mb-10 animate-slide-up">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Welcome Back!</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-5xl font-bold mb-2 bg-gradient-hero bg-clip-text text-transparent">Welcome Back!</h1>
+            <p className="text-muted-foreground text-lg">
               How are you feeling today?
             </p>
           </div>
-          <Button size="lg" onClick={() => navigate("/entry/new")}>
+          <Button size="lg" onClick={() => navigate("/entry/new")} className="bg-gradient-hero hover:shadow-glow text-white rounded-2xl hover-lift">
             <PenSquare className="mr-2 h-5 w-5" />
             New Entry
           </Button>
         </div>
 
         {/* Stats Overview */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="border-2 shadow-md hover:shadow-lg transition-shadow">
+        <div className="grid md:grid-cols-3 gap-8 mb-10">
+          <div className="glass-card hover-lift animate-slide-up">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Total Entries</CardTitle>
               <CardDescription>Your journaling streak</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-5xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              <p className="text-6xl font-bold bg-gradient-hero bg-clip-text text-transparent">
                 {entries.length}
               </p>
             </CardContent>
-          </Card>
+          </div>
 
-          <Card className="border-2 shadow-md hover:shadow-lg transition-shadow">
+          <div className="glass-card hover-lift animate-slide-up" style={{ animationDelay: '0.1s' }}>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Most Common Emotion</CardTitle>
               <CardDescription>This week</CardDescription>
@@ -132,27 +132,29 @@ const Dashboard = () => {
                 <p className="text-muted-foreground">No entries yet</p>
               )}
             </CardContent>
-          </Card>
+          </div>
 
-          <Card className="border-2 shadow-md hover:shadow-lg transition-shadow">
+          <div className="glass-card hover-lift animate-slide-up" style={{ animationDelay: '0.2s' }}>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Emotional Wellness</CardTitle>
               <CardDescription>Trending</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-8 w-8 text-emotion-calm" />
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-emotion-calm rounded-2xl">
+                  <TrendingUp className="h-6 w-6 text-emotion-calm" />
+                </div>
                 <p className="text-2xl font-bold">Improving</p>
               </div>
             </CardContent>
-          </Card>
+          </div>
         </div>
 
         {/* Mood Chart */}
         {chartData.length > 0 && (
-          <Card className="mb-8 border-2 shadow-lg">
+          <div className="glass-card mb-10 animate-slide-up" style={{ animationDelay: '0.3s' }}>
             <CardHeader className="pb-4">
-              <CardTitle className="text-2xl">Emotional Trends</CardTitle>
+              <CardTitle className="text-3xl font-bold bg-gradient-hero bg-clip-text text-transparent">Emotional Trends</CardTitle>
               <CardDescription className="text-base">Your mood patterns over time</CardDescription>
             </CardHeader>
             <CardContent>
@@ -195,57 +197,64 @@ const Dashboard = () => {
                     <Line
                       type="monotone"
                       dataKey="score"
-                      strokeWidth={3}
-                      stroke="hsl(var(--primary))"
+                      strokeWidth={4}
+                      stroke="url(#colorGradient)"
                       dot={(props: any) => {
                         const { cx, cy, payload } = props;
                         return (
                           <circle
                             cx={cx}
                             cy={cy}
-                            r={6}
+                            r={7}
                             fill={payload.fill}
                             stroke="hsl(var(--background))"
-                            strokeWidth={2}
-                            className="animate-pulse"
+                            strokeWidth={3}
+                            className="animate-pulse-glow"
                           />
                         );
                       }}
-                      activeDot={{ r: 8, strokeWidth: 2 }}
+                      activeDot={{ r: 9, strokeWidth: 3 }}
                     />
+                    <defs>
+                      <linearGradient id="colorGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="hsl(var(--primary))" />
+                        <stop offset="50%" stopColor="hsl(var(--secondary))" />
+                        <stop offset="100%" stopColor="hsl(var(--accent))" />
+                      </linearGradient>
+                    </defs>
                   </LineChart>
                 </ResponsiveContainer>
               </ChartContainer>
             </CardContent>
-          </Card>
+          </div>
         )}
 
         {/* Recent Entries */}
-        <Card className="border-2 shadow-lg">
+        <div className="glass-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <CardHeader>
-            <CardTitle className="text-2xl">Recent Entries</CardTitle>
+            <CardTitle className="text-3xl font-bold bg-gradient-hero bg-clip-text text-transparent">Recent Entries</CardTitle>
             <CardDescription className="text-base">Your latest journal entries</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
               <p className="text-muted-foreground">Loading...</p>
             ) : entries.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">
+              <div className="text-center py-12">
+                <p className="text-muted-foreground mb-6 text-lg">
                   No entries yet. Start your journey!
                 </p>
-                <Button onClick={() => navigate("/entry/new")}>
+                <Button onClick={() => navigate("/entry/new")} className="bg-gradient-hero hover:shadow-glow text-white rounded-2xl">
                   Write Your First Entry
                 </Button>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {entries.map((entry) => (
                   <div
                     key={entry.id}
-                    className="p-5 border-2 border-border rounded-xl hover:bg-muted/50 hover:shadow-md transition-all duration-200"
+                    className="p-6 glass rounded-2xl hover:shadow-medium hover-lift transition-smooth"
                   >
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-between mb-4">
                       <EmotionBadge
                         emotion={entry.emotion}
                         score={entry.emotion_score}
@@ -258,13 +267,13 @@ const Dashboard = () => {
                         })}
                       </span>
                     </div>
-                    <p className="text-sm leading-relaxed line-clamp-2">{entry.content}</p>
+                    <p className="text-base leading-relaxed line-clamp-2">{entry.content}</p>
                   </div>
                 ))}
               </div>
             )}
           </CardContent>
-        </Card>
+        </div>
       </div>
     </div>
   );

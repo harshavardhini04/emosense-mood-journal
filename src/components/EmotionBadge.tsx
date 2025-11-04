@@ -33,17 +33,18 @@ const EmotionBadge = ({ emotion, score, size = "md" }: EmotionBadgeProps) => {
 
   return (
     <div
-      className={`inline-flex items-center gap-2 rounded-full font-medium ${sizeClasses[size]}`}
+      className={`inline-flex items-center gap-2 rounded-2xl font-medium transition-smooth hover:scale-105 ${sizeClasses[size]}`}
       style={{
-        backgroundColor: `hsl(var(--${config.color}) / 0.15)`,
+        backgroundColor: `hsl(var(--${config.color}) / 0.12)`,
         color: `hsl(var(--${config.color}))`,
-        border: `1px solid hsl(var(--${config.color}) / 0.3)`,
+        border: `2px solid hsl(var(--${config.color}) / 0.3)`,
+        boxShadow: `0 4px 12px hsl(var(--${config.color}) / 0.15)`,
       }}
     >
       <Icon className={iconSizes[size]} />
-      <span>{config.label}</span>
+      <span className="font-semibold">{config.label}</span>
       {score !== undefined && (
-        <span className="opacity-70">({Math.round(score * 100)}%)</span>
+        <span className="opacity-75 font-medium">({Math.round(score * 100)}%)</span>
       )}
     </div>
   );
