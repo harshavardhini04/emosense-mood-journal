@@ -74,7 +74,7 @@ const Index = () => {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
         
         <div className="container relative mx-auto px-4">
-          <h2 className="text-5xl md:text-6xl font-bold text-center mb-6 text-white" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)' }}>
+          <h2 className="text-5xl md:text-6xl font-bold text-center mb-6 bg-gradient-hero bg-clip-text text-transparent">
             How EmoSense Works
           </h2>
           <p className="text-center text-muted-foreground mb-20 max-w-2xl mx-auto text-lg">
