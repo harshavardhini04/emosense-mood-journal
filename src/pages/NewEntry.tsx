@@ -44,34 +44,64 @@ const NewEntry = () => {
     }
 
     try {
-      // Using custom browser-based ML model for emotion analysis
-      const data = await analyzeEmotionModel(content);
+      // Step 1: Get initial emotion classification from DistilBERT (browser-based)
+      const distilbertData = await analyzeEmotionModel(content);
 
-      setEmotion(data);
+      // Step 2: Enhance with Gemini AI for nuanced analysis
+      const { data: enhancedData, error: enhancedError } = await supabase.functions.invoke(
+        "analyze-emotion-enhanced",
+        { 
+          body: { 
+            content,
+            distilbert_emotion: distilbertData.emotion,
+            distilbert_confidence: distilbertData.confidence,
+            language: movieLanguage
+          } 
+        }
+      );
+
+      if (enhancedError || !enhancedData) {
+        console.error('Enhanced analysis failed, using DistilBERT only:', enhancedError);
+        // Fallback to basic DistilBERT analysis
+        setEmotion(distilbertData);
+        
+        if (distilbertData.emotion.toLowerCase() === 'happy') {
+          setRecommendations(null);
+          setSelectedGenre("");
+        } else {
+          const { data: recs, error: recError } = await supabase.functions.invoke(
+            "get-recommendations",
+            { body: { 
+              emotion: distilbertData.emotion, 
+              intent: distilbertData.intent, 
+              language: movieLanguage,
+              recommended_genres: distilbertData.recommended_genres 
+            } }
+          );
+          if (!recError) setRecommendations(recs);
+        }
+
+        toast({
+          title: "Analysis complete!",
+          description: distilbertData.summary,
+        });
+        return;
+      }
+
+      // Use enhanced analysis
+      setEmotion(enhancedData);
       
-      // For happy emotion, ask for genre first
-      if (data.emotion.toLowerCase() === 'happy') {
+      // If enhanced analysis includes recommendations, use them
+      if (enhancedData.recommendations) {
+        setRecommendations(enhancedData.recommendations);
+      } else if (enhancedData.emotion.toLowerCase() === 'happy') {
         setRecommendations(null);
         setSelectedGenre("");
-      } else {
-        // Get recommendations for other emotions using intent and recommended genres
-        const { data: recs, error: recError } = await supabase.functions.invoke(
-          "get-recommendations",
-          { body: { 
-            emotion: data.emotion, 
-            intent: data.intent, 
-            language: movieLanguage,
-            recommended_genres: data.recommended_genres 
-          } }
-        );
-
-        if (recError) throw recError;
-        setRecommendations(recs);
       }
 
       toast({
-        title: "Analysis complete!",
-        description: data.summary,
+        title: "Enhanced Analysis Complete!",
+        description: enhancedData.summary,
       });
     } catch (error: any) {
       toast({
