@@ -49,7 +49,7 @@ const Index = () => {
             Understood & Guided
           </h1>
           <p className="text-xl md:text-2xl text-foreground/80 mb-12 max-w-3xl mx-auto animate-fade-in leading-relaxed">
-            Transform your emotions into insights with AI-powered wellness guidance
+            Transform your emotions into insights with intelligent wellness guidance
           </p>
           <Button
             size="lg"
@@ -72,7 +72,7 @@ const Index = () => {
             How EmoSense Works
           </h2>
           <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
-            Discover how our AI-powered platform helps you understand and improve your emotional wellbeing
+            Discover how our intelligent platform helps you understand and improve your emotional wellbeing
           </p>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -80,9 +80,9 @@ const Index = () => {
               <div className="bg-primary w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-emotion">
                 <Sparkles className="h-7 w-7 text-primary-foreground" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-primary">AI-Powered Analysis</h3>
+              <h3 className="text-2xl font-bold mb-4 text-primary">Smart Analysis</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Our advanced AI detects emotions in your journal entries, helping you
+                Our advanced technology detects emotions in your journal entries, helping you
                 understand your emotional patterns with precision and care
               </p>
             </div>

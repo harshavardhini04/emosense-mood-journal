@@ -47,7 +47,7 @@ const NewEntry = () => {
       // Step 1: Get initial emotion classification from DistilBERT (browser-based)
       const distilbertData = await analyzeEmotionModel(content);
 
-      // Step 2: Enhance with Gemini AI for nuanced analysis
+      // Step 2: Enhance with Gemini for nuanced analysis
       const { data: enhancedData, error: enhancedError } = await supabase.functions.invoke(
         "analyze-emotion-enhanced",
         { 
