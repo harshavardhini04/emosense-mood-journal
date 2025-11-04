@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import { Sparkles, TrendingUp, Heart } from "lucide-react";
-import heroBg from "@/assets/hero-bg.jpg";
+import heroBg from "@/assets/hero-bg-gradient.jpg";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -35,11 +35,13 @@ const Index = () => {
       <Navbar user={user} />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-32 overflow-hidden bg-primary/5">
-        {/* Background elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
+      <section className="relative pt-32 pb-32 overflow-hidden">
+        {/* Background image with overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroBg})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background/80" />
 
         <div className="container relative mx-auto px-4 text-center">
           <h1 className="text-6xl md:text-8xl font-bold mb-8 text-primary animate-fade-in leading-tight">
@@ -47,8 +49,7 @@ const Index = () => {
             Understood & Guided
           </h1>
           <p className="text-xl md:text-2xl text-foreground/80 mb-12 max-w-3xl mx-auto animate-fade-in leading-relaxed">
-            EmoSense uses advanced AI to understand how you feel and provides personalized
-            recommendations to nurture your emotional wellbeing journey
+            Transform your emotions into insights with AI-powered wellness guidance
           </p>
           <Button
             size="lg"
