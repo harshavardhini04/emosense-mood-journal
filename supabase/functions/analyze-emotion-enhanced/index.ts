@@ -189,17 +189,36 @@ Analyze the nuanced emotional state and recommend films.`;
     const aiData = await aiResponse.json();
     const aiContent = aiData.choices[0].message.content;
     
+    console.log('Raw AI response:', aiContent);
+    
+    // Helper function to clean markdown code blocks
+    function cleanMarkdownJson(text: string): string {
+      return text
+        .replace(/^```json\s*/i, '')  // Remove opening ```json
+        .replace(/^```\s*/i, '')       // Remove opening ```
+        .replace(/\s*```$/i, '')       // Remove closing ```
+        .trim();
+    }
+    
     // Parse AI response
     let enhancedAnalysis;
     try {
-      const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
+      // Clean markdown formatting first
+      const cleanedContent = cleanMarkdownJson(aiContent);
+      console.log('Cleaned content:', cleanedContent);
+      
+      // Try to extract JSON object
+      const jsonMatch = cleanedContent.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         enhancedAnalysis = JSON.parse(jsonMatch[0]);
+        console.log('Successfully parsed enhanced analysis');
       } else {
+        console.error('No JSON object found in cleaned content');
         throw new Error('No JSON found in response');
       }
     } catch (parseError) {
-      console.error('Failed to parse AI response:', aiContent);
+      console.error('Failed to parse AI response:', parseError);
+      console.error('Original AI content:', aiContent);
       throw new Error('Invalid AI response format');
     }
 
