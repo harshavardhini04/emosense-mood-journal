@@ -290,7 +290,17 @@ const Dashboard = () => {
                 {entries.map((entry) => (
                   <div
                     key={entry.id}
-                    className="p-6 glass rounded-2xl hover:shadow-medium hover-lift transition-smooth"
+                    onClick={() => navigate(`/entry/${entry.id}`)}
+                    className="p-6 glass rounded-2xl hover:shadow-medium hover-lift transition-smooth cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        navigate(`/entry/${entry.id}`);
+                      }
+                    }}
+                    aria-label={`View journal entry from ${new Date(entry.created_at).toLocaleDateString()}`}
                   >
                     <div className="flex items-center justify-between mb-4">
                       <EmotionBadge
@@ -305,7 +315,7 @@ const Dashboard = () => {
                         })}
                       </span>
                     </div>
-                    <p className="text-base leading-relaxed line-clamp-2">{entry.content}</p>
+                    <p className="text-base leading-relaxed line-clamp-3">{entry.content}</p>
                   </div>
                 ))}
               </div>
