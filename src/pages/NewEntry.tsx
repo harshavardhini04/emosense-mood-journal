@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, RefreshCw } from "lucide-react";
 import { useEmotionAnalysis } from "@/hooks/useEmotionAnalysis";
 
 const NewEntry = () => {
@@ -22,6 +22,7 @@ const NewEntry = () => {
   const [entryLanguage, setEntryLanguage] = useState("english");
   const [movieLanguage, setMovieLanguage] = useState("english");
   const [selectedGenre, setSelectedGenre] = useState("");
+  const [isRefreshingRecs, setIsRefreshingRecs] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -88,8 +89,11 @@ const NewEntry = () => {
         return;
       }
 
-      // Use enhanced analysis
-      setEmotion(enhancedData);
+      // Use enhanced analysis (ensure score/confidence is available)
+      setEmotion({
+        ...enhancedData,
+        score: enhancedData.score || enhancedData.confidence || distilbertData.confidence
+      });
       
       // If enhanced analysis includes recommendations, use them
       if (enhancedData.recommendations) {
@@ -109,6 +113,56 @@ const NewEntry = () => {
         description: error.message || "Failed to analyze emotion",
         variant: "destructive",
       });
+    }
+  };
+
+  const refreshRecommendations = async () => {
+    if (!emotion) return;
+    
+    setIsRefreshingRecs(true);
+    try {
+      const body = emotion.emotion.toLowerCase() === 'happy' && selectedGenre
+        ? { 
+            emotion: emotion.emotion, 
+            intent: emotion.intent, 
+            language: movieLanguage, 
+            genre: selectedGenre,
+            recommended_genres: emotion.recommended_genres 
+          }
+        : { 
+            emotion: emotion.emotion, 
+            intent: emotion.intent, 
+            language: movieLanguage,
+            recommended_genres: emotion.recommended_genres 
+          };
+      
+      const { data: recs, error: recError } = await supabase.functions.invoke(
+        "get-recommendations",
+        { body }
+      );
+      
+      if (recError) {
+        toast({
+          title: "Error refreshing",
+          description: recError.message,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setRecommendations(recs);
+      toast({
+        title: "Recommendations refreshed!",
+        description: "New suggestions have been generated for you.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to refresh recommendations",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRefreshingRecs(false);
     }
   };
 
@@ -321,12 +375,26 @@ const NewEntry = () => {
             {recommendations && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Recommendations for You</CardTitle>
-                  <CardDescription>
-                    {emotion?.emotion.toLowerCase() === 'happy' 
-                      ? `${selectedGenre.charAt(0).toUpperCase() + selectedGenre.slice(1)} movies to enjoy`
-                      : "Based on your current emotional state"}
-                  </CardDescription>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle>Recommendations for You</CardTitle>
+                      <CardDescription>
+                        {emotion?.emotion.toLowerCase() === 'happy' 
+                          ? `${selectedGenre.charAt(0).toUpperCase() + selectedGenre.slice(1)} movies to enjoy`
+                          : "Based on your current emotional state"}
+                      </CardDescription>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={refreshRecommendations}
+                      disabled={isRefreshingRecs}
+                      className="ml-4 rounded-xl"
+                    >
+                      <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshingRecs ? 'animate-spin' : ''}`} />
+                      Refresh
+                    </Button>
+                  </div>
                   <div className="mt-4">
                     <label className="text-sm font-medium mb-2 block">Movie Language</label>
                     <select
