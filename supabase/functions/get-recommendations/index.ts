@@ -65,17 +65,20 @@ serve(async (req) => {
     
     console.log("Mapped genres:", genresString);
 
-    // Construct Gemini prompt for English-title movie recommendations
-    const prompt = `The user's selected cinema language is: ${language}.
-The user's detected mood is: ${emotion}.
-Recommend 6 movies that match these genres: ${genresString} and primarily belong to this cinema language: ${language}.
-Movie titles must be in English, even if the original movie language is not English.
-If fewer than 6 movies exist in ${language}, include popular international movies to fill the remaining slots.
+    // Construct Gemini prompt for emotion-based, language-specific movie recommendations
+    const prompt = `The user's detected mood is: ${emotion}.
+The user's selected cinema language/industry is: ${language}.
+Recommend exactly 6 movies that match:
+(A) the mood using these emotion-aligned genres: ${genresString}
+(B) movies produced in the cinema industry: ${language}.
 
-Response must be ONLY valid JSON like:
-[ { "title": "Movie Name", "year": 2024 } ]
+Movie titles must always be in English spelling only, even if the movie language is not English.
+If fewer than 6 exist in ${language} cinema, fill remaining using international (English) cinema while preserving the mood.
 
-Do not include markdown, descriptions, commentary, or any keys other than title and year.`;
+Return only valid JSON in this format:
+[ { "title": "English Title", "year": 2024 } ]
+
+No markdown, no description, no extra fields, no commentary.`;
 
     console.log("Calling Gemini API with prompt for language:", language);
 
