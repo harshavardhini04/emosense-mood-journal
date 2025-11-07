@@ -1,11 +1,28 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.77.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Mood → Genre Mapping
+const moodToGenres: Record<string, string[]> = {
+  happy: ["Comedy", "Family", "Adventure"],
+  sad: ["Feel-good", "Animation", "Friendship"],
+  stressed: ["Comfort", "Romance", "Light-Drama"],
+  anxious: ["Comfort", "Romance", "Light-Drama"],
+  angry: ["Action", "Thriller"],
+  bored: ["Comedy", "Action", "Sci-Fi"],
+  lonely: ["Romance", "Drama"],
+  motivated: ["Sports", "Biography", "Inspirational"],
+  excited: ["Action", "Superhero", "Adventure"],
+  romantic: ["Romance", "Drama"],
+  tired: ["Calm", "Slice-of-Life", "Family"],
+  calm: ["Calm", "Slice-of-Life", "Family"],
+  neutral: ["Adventure", "Comedy"],
+};
+
+// Fallback activities based on emotion
 const recommendationMap: Record<string, { activities: string[] }> = {
   happy: {
     activities: ["Go for a nature walk", "Call a friend", "Try a new recipe", "Dance to your favorite music", "Start a creative project"]
@@ -33,92 +50,78 @@ serve(async (req) => {
   }
 
   try {
-    const { emotion, intent, language = 'english', genre, recommended_genres } = await req.json();
-    console.log("Getting recommendations for emotion:", emotion, "intent:", intent, "language:", language, "genre:", genre, "recommended_genres:", recommended_genres);
+    const { emotion, intent, language = 'english' } = await req.json();
+    console.log("Getting recommendations for emotion:", emotion, "intent:", intent, "language:", language);
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    // LOVABLE_API_KEY is automatically provided by Lovable AI
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not configured');
+    }
 
+    // Map emotion to genres (fallback to Adventure + Comedy if not found)
+    const mappedGenres = moodToGenres[emotion.toLowerCase()] || ["Adventure", "Comedy"];
+    const genresString = mappedGenres.join(", ");
+    
+    console.log("Mapped genres:", genresString);
+
+    // Construct Gemini prompt for movie recommendations
+    const prompt = `Recommend 6 movies that match these genres: ${genresString} and the mood: ${emotion}.
+Return only valid JSON like:
+[ { "title": "Movie Name", "year": 2024 } ]
+Do not include anything else — no markdown, no commentary.`;
+
+    console.log("Calling Gemini API with prompt:", prompt);
+
+    // Call Lovable AI Gateway (Google Gemini)
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          { 
+            role: 'system', 
+            content: 'You are a movie recommendation expert. Always return valid JSON arrays only, with no markdown or additional text.' 
+          },
+          { role: 'user', content: prompt }
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Gemini API error:', response.status, errorText);
+      throw new Error(`Gemini API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Gemini API response:", JSON.stringify(data));
+
+    // Parse the response content
     let movies: any[] = [];
-
-    // Strategy 1: Try exact intent match with language
-    if (intent && !genre) {
-      console.log("Strategy 1: Trying exact intent match:", intent);
-      const { data, error } = await supabase
-        .from('movies')
-        .select('title, genre, year, rating, description')
-        .eq('language', language.toLowerCase())
-        .eq('intent', intent.toLowerCase())
-        .limit(8);
-      
-      if (!error && data && data.length > 0) {
-        movies = data;
-        console.log("Found", data.length, "movies with exact intent match");
-      }
-    }
-
-    // Strategy 2: Try genre-based recommendations using AI-suggested genres
-    if (movies.length === 0 && recommended_genres && recommended_genres.length > 0) {
-      console.log("Strategy 2: Trying recommended genres:", recommended_genres);
-      const { data, error } = await supabase
-        .from('movies')
-        .select('title, genre, year, rating, description')
-        .eq('language', language.toLowerCase())
-        .in('genre', recommended_genres.map((g: string) => g.toLowerCase()))
-        .limit(8);
-      
-      if (!error && data && data.length > 0) {
-        movies = data;
-        console.log("Found", data.length, "movies with recommended genres");
-      }
-    }
-
-    // Strategy 3: Try user-selected genre (for happy emotion)
-    if (movies.length === 0 && genre) {
-      console.log("Strategy 3: Trying user-selected genre:", genre);
-      const { data, error } = await supabase
-        .from('movies')
-        .select('title, genre, year, rating, description')
-        .eq('language', language.toLowerCase())
-        .eq('genre', genre.toLowerCase())
-        .limit(8);
-      
-      if (!error && data && data.length > 0) {
-        movies = data;
-        console.log("Found", data.length, "movies with user-selected genre");
-      }
-    }
-
-    // Strategy 4: Fallback to base emotion
-    if (movies.length === 0 && emotion) {
-      console.log("Strategy 4: Falling back to base emotion:", emotion);
-      const { data, error } = await supabase
-        .from('movies')
-        .select('title, genre, year, rating, description')
-        .eq('language', language.toLowerCase())
-        .eq('base_emotion', emotion.toLowerCase())
-        .limit(8);
-      
-      if (!error && data && data.length > 0) {
-        movies = data;
-        console.log("Found", data.length, "movies with base emotion");
-      }
-    }
-
-    // Strategy 5: Last resort - just get any movies in that language
-    if (movies.length === 0) {
-      console.log("Strategy 5: Last resort - any movies in language:", language);
-      const { data, error } = await supabase
-        .from('movies')
-        .select('title, genre, year, rating, description')
-        .eq('language', language.toLowerCase())
-        .limit(8);
-      
-      if (!error && data && data.length > 0) {
-        movies = data;
-        console.log("Found", data.length, "movies as last resort");
+    const content = data.choices?.[0]?.message?.content;
+    
+    if (content) {
+      try {
+        // Clean up potential markdown formatting
+        let cleanedContent = content.trim();
+        if (cleanedContent.startsWith('```json')) {
+          cleanedContent = cleanedContent.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+        } else if (cleanedContent.startsWith('```')) {
+          cleanedContent = cleanedContent.replace(/```\n?/g, '');
+        }
+        
+        movies = JSON.parse(cleanedContent);
+        console.log("Parsed movies:", movies);
+      } catch (parseError) {
+        console.error("Failed to parse Gemini response:", parseError);
+        console.error("Content was:", content);
+        // Fallback to empty array
+        movies = [];
       }
     }
 
