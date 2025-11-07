@@ -65,13 +65,37 @@ serve(async (req) => {
     
     console.log("Mapped genres:", genresString);
 
-    // Construct Gemini prompt for movie recommendations
-    const prompt = `Recommend 6 movies that match these genres: ${genresString} and the mood: ${emotion}.
-Return only valid JSON like:
-[ { "title": "Movie Name", "year": 2024 } ]
-Do not include anything else — no markdown, no commentary.`;
+    // Language formatting instructions for correct script
+    const languageInstructions: Record<string, string> = {
+      tamil: "Tamil script (தமிழ்), not English transliteration",
+      telugu: "Telugu script (తెలుగు), not English transliteration",
+      malayalam: "Malayalam script (മലയാളം), not English transliteration",
+      hindi: "Hindi script (हिंदी), not English transliteration",
+      english: "English"
+    };
 
-    console.log("Calling Gemini API with prompt:", prompt);
+    const langInstruction = languageInstructions[language.toLowerCase()] || "English";
+
+    // Construct Gemini prompt for multilingual movie recommendations
+    const prompt = `The user's movie recommendation language is: ${language}.
+The user's mood is: ${emotion}.
+Recommend 6 movies that match these genres: ${genresString} and are primarily available in: ${language}.
+If fewer than 6 movies exist in ${language}, include popular international movies to fill the remaining slots.
+
+CRITICAL: Movie titles must be written in ${langInstruction}.
+For example:
+- Tamil movies → use Tamil script only (example: "விக்ரம்")
+- Telugu movies → use Telugu script only (example: "బాహుబలి")
+- Malayalam movies → use Malayalam script only (example: "ദൃശ്യം")
+- Hindi movies → use Hindi script only (example: "दंगल")
+- English movies → use English
+
+Response must be ONLY valid JSON like:
+[ { "title": "Movie Title in Correct Script", "year": 2024 } ]
+
+Do not include any explanation, description, or markdown. Only JSON array.`;
+
+    console.log("Calling Gemini API with prompt for language:", language);
 
     // Call Lovable AI Gateway (Google Gemini)
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
